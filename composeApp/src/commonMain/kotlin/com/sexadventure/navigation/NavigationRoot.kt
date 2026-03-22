@@ -42,7 +42,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
 
                         entry<Route.FavouritePoses> { }
 
-                        entry<Route.PoseDetails> { }
+                        entry<Route.PoseDetails> { entry -> }
 
                         entry<Route.Profile> { }
                     },
