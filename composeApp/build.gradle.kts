@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -29,6 +31,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+
+            // koin
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.designsystem)
@@ -47,6 +53,14 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.kotlinx.serialization.json)
+
+            // koin
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+
+            // room
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
 
             // icons extended
             implementation(libs.icons)
@@ -95,4 +109,8 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
