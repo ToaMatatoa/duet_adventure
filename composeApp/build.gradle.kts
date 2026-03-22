@@ -29,9 +29,14 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+
+            // koin
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.designsystem)
+            implementation(projects.core)
 
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -47,6 +52,10 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
             implementation(libs.jetbrains.lifecycle.viewmodel)
             implementation(libs.kotlinx.serialization.json)
+
+            // koin
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
 
             // icons extended
             implementation(libs.icons)
@@ -96,3 +105,4 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
+

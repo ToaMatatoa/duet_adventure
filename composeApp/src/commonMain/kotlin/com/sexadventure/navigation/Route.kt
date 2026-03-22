@@ -12,7 +12,7 @@ sealed interface Route : NavKey {
     data object FavouritePoses : Route
 
     @Serializable
-    data object PoseDetails : Route
+    data class PoseDetails(val id: Int) : Route
 
     @Serializable
     data object Profile : Route
