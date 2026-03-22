@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -40,6 +41,15 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            // navigation 3
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodel.nav3)
+            implementation(libs.jetbrains.lifecycle.viewmodel)
+            implementation(libs.kotlinx.serialization.json)
+
+            // icons extended
+            implementation(libs.icons)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
