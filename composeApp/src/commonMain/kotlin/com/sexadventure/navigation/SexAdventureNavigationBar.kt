@@ -1,4 +1,4 @@
-package com.navigation
+package com.sexadventure.navigation
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon

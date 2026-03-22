@@ -1,4 +1,4 @@
-package com.navigation
+package com.sexadventure.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import compose.icons.TablerIcons
@@ -11,18 +11,19 @@ data class BottomNavItem(
     val title: String,
 )
 
-val TOP_LEVEL_DESTINATIONS: Map<Route, BottomNavItem> =
-    mapOf(
+val TOP_LEVEL_DESTINATIONS: Map<Route, BottomNavItem> = mapOf(
         Route.AllPoses to
             BottomNavItem(
                 icon = TablerIcons.List,
                 title = "All",
             ),
+
         Route.FavouritePoses to
             BottomNavItem(
                 icon = TablerIcons.Heart,
                 title = "Favorites",
             ),
+
         Route.Profile to
             BottomNavItem(
                 icon = TablerIcons.User,

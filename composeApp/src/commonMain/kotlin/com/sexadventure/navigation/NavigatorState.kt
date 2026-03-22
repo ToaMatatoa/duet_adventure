@@ -1,4 +1,4 @@
-package com.navigation
+package com.sexadventure.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -30,8 +30,7 @@ class NavigationState(
     var topLevelRoute by topLevelRoute
 
     val stacksInUse: List<NavKey>
-        get() =
-            if (topLevelRoute == startRoute) {
+        get() = if (topLevelRoute == startRoute) {
                 listOf(startRoute)
             } else {
                 listOf(startRoute, topLevelRoute)
@@ -48,7 +47,9 @@ fun rememberNavigationState(
             startRoute,
             topLevelRoutes,
             configuration = serializersConfig,
-            serializer = MutableStateSerializer(PolymorphicSerializer(NavKey::class)),
+            serializer = MutableStateSerializer(
+                PolymorphicSerializer(NavKey::class)
+            ),
         ) {
             mutableStateOf(startRoute)
         }
@@ -70,10 +71,8 @@ fun rememberNavigationState(
     }
 }
 
-val serializersConfig =
-    SavedStateConfiguration {
-        serializersModule =
-            SerializersModule {
+val serializersConfig = SavedStateConfiguration {
+        serializersModule = SerializersModule {
                 polymorphic(NavKey::class) {
                     subclass(Route.AllPoses::class, Route.AllPoses.serializer())
                     subclass(Route.FavouritePoses::class, Route.FavouritePoses.serializer())

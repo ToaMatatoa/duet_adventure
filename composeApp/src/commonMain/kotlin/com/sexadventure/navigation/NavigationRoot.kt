@@ -1,4 +1,4 @@
-package com.navigation
+package com.sexadventure.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,10 +17,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
             startRoute = Route.AllPoses,
             topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys.toSet<NavKey>(),
         )
-    val navigator =
-        remember {
-            Navigator(navigationState)
-        }
+    val navigator = remember { Navigator(navigationState) }
 
     Scaffold(
         modifier = modifier,
@@ -39,8 +36,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                     .fillMaxSize()
                     .padding(paddingValues = innerPadding),
             onBack = navigator::goBack,
-            entries =
-                navigationState.toEntries(
+            entries = navigationState.toEntries(
                     entryProvider {
                         entry<Route.AllPoses> { }
 

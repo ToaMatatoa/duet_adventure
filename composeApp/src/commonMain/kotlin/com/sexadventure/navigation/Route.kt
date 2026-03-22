@@ -1,4 +1,4 @@
-package com.navigation
+package com.sexadventure.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

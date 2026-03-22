@@ -2,7 +2,7 @@ package com.sexadventure
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.navigation.NavigationRoot
+import com.sexadventure.navigation.NavigationRoot
 import com.sexadventure.designsystem.theme.SexAdventureTheme
 
 @Composable
