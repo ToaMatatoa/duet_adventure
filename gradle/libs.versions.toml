@@ -1,14 +1,14 @@
 [versions]
 # main
 agp = "9.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 material3 = "1.10.0-alpha05"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.18.0"
-composeMultiplatform = "1.10.2"
-androidx-lifecycle = "2.10.0-beta01"
-kotlinx-serialization = "1.9.0"
+composeMultiplatform = "1.10.3"
+androidx-lifecycle = "2.10.0"
+kotlinx-serialization = "1.10.0"
 
 # versions
 android-compileSdk = "36"
@@ -16,15 +16,15 @@ android-minSdk = "29"
 android-targetSdk = "36"
 
 # navigation
-navigation3 = "1.0.0-alpha05"
+navigation3 = "1.0.0-alpha06"
 
 # koin di
-koin-bom = "4.0.0"
+koin-bom = "4.2.0"
 
 # room and sqlite db
-room = "2.7.0-alpha10"
-ksp = "2.0.20-1.0.25"
-sqlite = "2.5.0-SNAPSHOT"
+room = "2.8.4"
+ksp = "2.3.6"
+sqlite = "2.6.2"
 
 # icons
 icons = "1.1.1"

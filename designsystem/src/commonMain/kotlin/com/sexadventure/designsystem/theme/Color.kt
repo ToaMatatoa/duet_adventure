@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.sexadventure.designsystem.theme
 
 import androidx.compose.material3.darkColorScheme
