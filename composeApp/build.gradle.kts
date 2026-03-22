@@ -6,8 +6,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -38,6 +36,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.designsystem)
+            implementation(projects.core)
 
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -57,10 +56,6 @@ kotlin {
             // koin
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
-
-            // room
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
 
             // icons extended
             implementation(libs.icons)
@@ -111,6 +106,3 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
-room {
-    schemaDirectory("$projectDir/schemas")
-}
