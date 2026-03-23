@@ -13,5 +13,5 @@ fun domainModules(): List<Module> = buildList {
     addAll(coreModules)
 
     // domain modules
-    // add(useCaseModule)
+    add(useCaseModule)
 }
