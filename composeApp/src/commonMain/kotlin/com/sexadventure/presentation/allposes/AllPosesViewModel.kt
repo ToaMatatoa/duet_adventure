@@ -15,4 +15,5 @@ class AllPosesViewModel : ViewModel() {
 @Immutable
 data class AllPosesState(
     val poses: List<PoseData> = emptyList(),
+    val isLoading: Boolean = false,
 )

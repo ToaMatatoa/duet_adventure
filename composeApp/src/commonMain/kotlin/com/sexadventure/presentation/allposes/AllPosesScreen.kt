@@ -2,12 +2,15 @@ package com.sexadventure.presentation.allposes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +24,7 @@ import com.sexadventure.domain.model.PoseData
 @Composable
 fun AllPosesScreen(
     state: AllPosesState,
+    onPoseClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -35,24 +39,52 @@ fun AllPosesScreen(
             showBackButton = false,
         )
 
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
-        ) {
-            items(items = state.poses, key = { it.id }) { pose ->
-                ListItem(
-                    image = null,
-                    title = pose.name,
-                    description = pose.description,
-                    difficulty = pose.difficulty,
-                    personalScore = pose.personalScore,
-                    category = pose.category,
-                    isFavourite = pose.isFavorite,
-                    onClick = {},
-                )
+        when {
+            state.isLoading -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+
+            state.poses.isEmpty() -> {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    Text(
+                        text = Strings.AllPoses.EMPTY_STATE,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    )
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
+                ) {
+                    items(items = state.poses, key = { it.id }) { pose ->
+                        ListItem(
+                            image = null,
+                            title = pose.name,
+                            description = pose.description,
+                            difficulty = pose.difficulty,
+                            personalScore = pose.personalScore,
+                            category = pose.category,
+                            isFavourite = pose.isFavorite,
+                            onClick = { onPoseClick(pose.id) },
+                        )
+                    }
+                }
             }
         }
     }
@@ -62,42 +94,55 @@ fun AllPosesScreen(
 @Composable
 private fun AllPosesScreenPreview() {
     AllPosesScreen(
-        state = AllPosesState(
-                poses = listOf(
+        state = AllPosesState( 
+            poses = listOf(
                         PoseData(
                             id = 1,
                             name = "Pose 1",
                             description = "Description for Pose 1",
-                            imageUrl = "",
                             category = "Category A",
                             difficulty = 2,
                             personalScore = 4,
                             isFavorite = true,
-                            isUserCreated = false,
                         ),
                         PoseData(
                             id = 2,
                             name = "Pose 2",
                             description = "Description for Pose 2",
-                            imageUrl = "",
                             category = "Category B",
                             difficulty = 3,
                             personalScore = 5,
                             isFavorite = false,
-                            isUserCreated = true,
                         ),
                         PoseData(
                             id = 3,
-                            name = "Pose 3. Simply long description as pose duration hihi",
-                            description = "Very long description for pose 3. Some sexy pose. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                            imageUrl = "",
+                            name = "Pose 3. Simply long name",
+                            description = "Very long description for pose 3. Some sexy pose. Lorem ipsum dolor sit amet.",
                             category = "Oral",
                             difficulty = 8,
                             personalScore = 9,
                             isFavorite = true,
-                            isUserCreated = true,
-                        )
+                        ),
                     ),
-            ),
+        ),
+        onPoseClick = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AllPosesScreenEmptyPreview() {
+    AllPosesScreen(
+        state = AllPosesState(),
+        onPoseClick = {},
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AllPosesScreenLoadingPreview() {
+    AllPosesScreen(
+        state = AllPosesState(isLoading = true),
+        onPoseClick = {},
     )
 }

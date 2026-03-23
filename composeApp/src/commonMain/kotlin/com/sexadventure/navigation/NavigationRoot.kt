@@ -44,7 +44,11 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                 navigationState.toEntries(
                     entryProvider {
                         entry<Route.AllPoses> {
-                            AllPosesRoot()
+                            AllPosesRoot(
+                                onPoseClick = { poseId ->
+                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
+                                },
+                            )
                         }
 
                         entry<Route.FavouritePoses> {
