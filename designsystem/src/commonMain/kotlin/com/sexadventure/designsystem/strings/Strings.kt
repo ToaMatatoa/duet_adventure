@@ -29,6 +29,7 @@ object Strings {
      * ────────────────────────────────────────────── */
     object AllPoses {
         const val SCREEN_TITLE = "All Poses"
+        const val EMPTY_STATE = "No poses yet"
     }
 
     /* ──────────────────────────────────────────────
