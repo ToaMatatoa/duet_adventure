@@ -28,6 +28,10 @@ interface PoseDao {
     @Query("SELECT * FROM pose ORDER BY id")
     fun getAllPoses(): Flow<List<PoseEntity>>
 
+    /** Poses whose category column contains the given substring (e.g. "Classic") */
+    @Query("SELECT * FROM pose WHERE category LIKE '%' || :category || '%' ORDER BY id")
+    fun getPosesByCategory(category: String): Flow<List<PoseEntity>>
+
     @Query("SELECT * FROM pose WHERE id = :id")
     suspend fun getPoseById(id: Int): PoseEntity?
 

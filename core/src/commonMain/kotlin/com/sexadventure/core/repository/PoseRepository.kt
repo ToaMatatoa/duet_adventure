@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PoseRepository {
     fun getAllPoses(): Flow<List<PoseEntity>>
+    fun getPosesByCategory(category: String): Flow<List<PoseEntity>>
     suspend fun getPoseById(id: Int): PoseEntity?
     suspend fun getPredefinedPoses(): List<PoseEntity>
     suspend fun getUserCreatedPoses(): List<PoseEntity>
@@ -23,6 +24,9 @@ class PoseRepositoryImpl(
 
     override fun getAllPoses(): Flow<List<PoseEntity>> =
         poseDao.getAllPoses()
+
+    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> =
+        poseDao.getPosesByCategory(category)
 
     override suspend fun getPoseById(id: Int): PoseEntity? =
         poseDao.getPoseById(id)
