@@ -45,6 +45,7 @@ object Strings {
      * ────────────────────────────────────────────── */
     object PoseDetail {
         const val SCREEN_TITLE = "Pose Details"
+        const val POSE_NOT_FOUND = "Pose not found"
     }
 
     /* ──────────────────────────────────────────────
