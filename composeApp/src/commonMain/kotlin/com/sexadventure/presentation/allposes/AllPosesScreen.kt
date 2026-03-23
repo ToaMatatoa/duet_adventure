@@ -26,6 +26,7 @@ import com.sexadventure.mapper.resolveImage
 fun AllPosesScreen(
     state: AllPosesState,
     onPoseClick: (Int) -> Unit,
+    onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -83,6 +84,7 @@ fun AllPosesScreen(
                             category = pose.category,
                             isFavourite = pose.isFavorite,
                             onClick = { onPoseClick(pose.id) },
+                            onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
                         )
                     }
                 }
@@ -128,6 +130,7 @@ private fun AllPosesScreenPreview() {
                     ),
         ),
         onPoseClick = {},
+        onFavouriteClick = { _, _ -> },
     )
 }
 
@@ -137,6 +140,7 @@ private fun AllPosesScreenEmptyPreview() {
     AllPosesScreen(
         state = AllPosesState(),
         onPoseClick = {},
+        onFavouriteClick = { _, _ -> },
     )
 }
 
@@ -146,5 +150,6 @@ private fun AllPosesScreenLoadingPreview() {
     AllPosesScreen(
         state = AllPosesState(isLoading = true),
         onPoseClick = {},
+        onFavouriteClick = { _, _ -> },
     )
 }

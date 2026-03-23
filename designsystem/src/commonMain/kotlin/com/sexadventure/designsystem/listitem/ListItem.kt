@@ -2,6 +2,8 @@ package com.sexadventure.designsystem.listitem
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +20,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +62,7 @@ fun ListItem(
     difficulty: Int = 0,
     personalScore: Int = 0,
     isFavourite: Boolean = false,
+    onFavouriteClick: () -> Unit = {},
 ) {
     Card(
         onClick = onClick,
@@ -137,6 +142,7 @@ fun ListItem(
                 BottomRow(
                     category = category,
                     isFavourite = isFavourite,
+                    onFavouriteClick = onFavouriteClick,
                 )
             }
         }
@@ -205,6 +211,7 @@ private fun StatsRow(
 private fun BottomRow(
     category: String,
     isFavourite: Boolean,
+    onFavouriteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -225,7 +232,13 @@ private fun BottomRow(
             imageVector = TablerIcons.Heart,
             contentDescription = Strings.Common.FAVOURITE_POSE,
             tint = if (isFavourite) FlameColor else MaterialTheme.colorScheme.outline,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier
+                .size(20.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(bounded = false, radius = 16.dp),
+                    onClick = onFavouriteClick,
+                ),
         )
     }
 }

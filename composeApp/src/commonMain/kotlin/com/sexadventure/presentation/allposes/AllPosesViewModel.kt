@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetAllPosesUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
+import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class AllPosesViewModel(
     getAllPosesUseCase: GetAllPosesUseCase,
     private val seedPosesUseCase: SeedPosesUseCase,
+    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
 ) : ViewModel() {
     val state: StateFlow<AllPosesState> =
         getAllPosesUseCase()
@@ -32,6 +34,15 @@ class AllPosesViewModel(
     init {
         viewModelScope.launch {
             seedPosesUseCase()
+        }
+    }
+
+    fun toggleFavourite(
+        id: Int,
+        currentFavourite: Boolean,
+    ) {
+        viewModelScope.launch {
+            toggleFavouriteUseCase(id = id, isFavorite = !currentFavourite)
         }
     }
 }

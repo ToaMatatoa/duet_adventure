@@ -5,13 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetFavouritePosesUseCase
+import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class FavouritePosesViewModel(
     getFavouritePosesUseCase: GetFavouritePosesUseCase,
+    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
 ) : ViewModel() {
     val state: StateFlow<FavouritePosesState> =
         getFavouritePosesUseCase()
@@ -25,6 +28,15 @@ class FavouritePosesViewModel(
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
                 initialValue = FavouritePosesState(isLoading = true),
             )
+
+    fun toggleFavourite(
+        id: Int,
+        currentFavourite: Boolean,
+    ) {
+        viewModelScope.launch {
+            toggleFavouriteUseCase(id = id, isFavorite = !currentFavourite)
+        }
+    }
 }
 
 @Immutable

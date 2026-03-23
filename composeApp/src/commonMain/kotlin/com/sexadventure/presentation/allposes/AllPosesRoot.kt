@@ -16,6 +16,7 @@ fun AllPosesRoot(
     AllPosesScreen(
         state = state,
         onPoseClick = onPoseClick,
+        onFavouriteClick = viewModel::toggleFavourite,
         modifier = modifier,
     )
 }
