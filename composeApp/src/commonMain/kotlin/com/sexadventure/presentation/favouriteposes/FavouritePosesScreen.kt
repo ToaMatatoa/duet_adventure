@@ -29,7 +29,7 @@ fun FavouritePosesScreen(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = Strings.FavouritePoses.PLACEHOLDER,
+            text = Strings.Common.PLACEHOLDER,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,

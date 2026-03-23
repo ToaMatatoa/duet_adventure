@@ -29,7 +29,7 @@ fun DetailPoseScreen(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = Strings.PoseDetail.PLACEHOLDER,
+            text = Strings.Common.PLACEHOLDER,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
