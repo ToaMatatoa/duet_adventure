@@ -2,9 +2,10 @@ package com.sexadventure.core.repository
 
 import com.sexadventure.core.database.PoseDao
 import com.sexadventure.core.database.PoseEntity
+import kotlinx.coroutines.flow.Flow
 
 interface PoseRepository {
-    suspend fun getAllPoses(): List<PoseEntity>
+    fun getAllPoses(): Flow<List<PoseEntity>>
     suspend fun getPoseById(id: Int): PoseEntity?
     suspend fun getPredefinedPoses(): List<PoseEntity>
     suspend fun getUserCreatedPoses(): List<PoseEntity>
@@ -20,7 +21,7 @@ class PoseRepositoryImpl(
     private val poseDao: PoseDao,
 ) : PoseRepository {
 
-    override suspend fun getAllPoses(): List<PoseEntity> =
+    override fun getAllPoses(): Flow<List<PoseEntity>> =
         poseDao.getAllPoses()
 
     override suspend fun getPoseById(id: Int): PoseEntity? =

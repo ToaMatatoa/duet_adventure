@@ -14,4 +14,3 @@ data class PoseJson(
     val category: String,
     val difficulty: Int,
 )
-
