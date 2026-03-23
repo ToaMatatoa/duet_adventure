@@ -20,6 +20,7 @@ import com.sexadventure.designsystem.listitem.ListItem
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
+import com.sexadventure.mapper.resolveImage
 
 @Composable
 fun AllPosesScreen(
@@ -74,7 +75,7 @@ fun AllPosesScreen(
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
-                            image = null,
+                            image = resolveImage(pose.imageUrl),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,
@@ -103,6 +104,7 @@ private fun AllPosesScreenPreview() {
                             category = "Category A",
                             difficulty = 2,
                             personalScore = 4,
+                            imageUrl = "sixty_nine",
                             isFavorite = true,
                         ),
                         PoseData(

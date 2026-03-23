@@ -1,8 +1,5 @@
 package com.sexadventure.domain.model
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class PoseData(
     val id: Int = 0,
     val name: String = "",
