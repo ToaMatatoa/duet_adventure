@@ -36,7 +36,8 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.designsystem)
-            implementation(projects.core)
+            implementation(projects.domain)
+            implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -56,6 +57,7 @@ kotlin {
             // koin
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
 
             // icons extended
             implementation(libs.icons)

@@ -38,13 +38,13 @@ fun TopBar(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = TablerIcons.ArrowLeft,
-                        contentDescription = Strings.TopBar.BACK,
+                        contentDescription = Strings.Common.BACK,
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }
         },
-        windowInsets = WindowInsets(top = 16.dp),
+        windowInsets = WindowInsets(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 scrolledContainerColor = MaterialTheme.colorScheme.background,

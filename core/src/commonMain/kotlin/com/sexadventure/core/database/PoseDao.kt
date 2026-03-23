@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PoseDao {
@@ -25,7 +26,7 @@ interface PoseDao {
     suspend fun getPredefinedCount(): Int
 
     @Query("SELECT * FROM pose ORDER BY id")
-    suspend fun getAllPoses(): List<PoseEntity>
+    fun getAllPoses(): Flow<List<PoseEntity>>
 
     @Query("SELECT * FROM pose WHERE id = :id")
     suspend fun getPoseById(id: Int): PoseEntity?
