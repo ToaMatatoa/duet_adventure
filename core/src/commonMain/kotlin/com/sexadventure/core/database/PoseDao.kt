@@ -21,6 +21,10 @@ interface PoseDao {
 
     // ── Read ────────────────────────────────────────────────────────
 
+    /** Quick check: how many poses are in the DB */
+    @Query("SELECT COUNT(*) FROM pose")
+    fun getPosesCount(): Flow<Int>
+
     /** Quick check: how many predefined poses are in the DB */
     @Query("SELECT COUNT(*) FROM pose WHERE isUserCreated = 0")
     suspend fun getPredefinedCount(): Int
