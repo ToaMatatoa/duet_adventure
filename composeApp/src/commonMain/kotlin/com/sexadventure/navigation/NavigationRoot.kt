@@ -52,11 +52,18 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                         }
 
                         entry<Route.FavouritePoses> {
-                            FavouritePosesRoot()
+                            FavouritePosesRoot(
+                                onPoseClick = { poseId ->
+                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
+                                },
+                            )
                         }
 
-                        entry<Route.PoseDetails> { entry ->
-                            DetailPoseRoot()
+                        entry<Route.PoseDetails> { route ->
+                            DetailPoseRoot(
+                                poseId = route.id,
+                                onBackClick = navigator::goBack,
+                            )
                         }
 
                         entry<Route.Profile> {
