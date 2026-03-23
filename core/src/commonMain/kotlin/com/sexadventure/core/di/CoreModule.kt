@@ -11,3 +11,10 @@ val provideDatabaseModule = module {
         single { getRoomDatabase(builder = get()) }
         single { getPoseDao(sexAdventureDatabase = get()) }
     }
+
+/**
+ * All Koin modules needed by the core layer
+ */
+val coreModules = listOf(
+    provideDatabaseModule,
+)

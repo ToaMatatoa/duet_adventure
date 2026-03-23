@@ -1,6 +1,7 @@
 package com.sexadventure
 
 import android.app.Application
+import com.sexadventure.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
