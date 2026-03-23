@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.stateIn
 class FavouritePosesViewModel(
     getFavouritePosesUseCase: GetFavouritePosesUseCase,
 ) : ViewModel() {
-
     val state: StateFlow<FavouritePosesState> =
         getFavouritePosesUseCase()
             .map { poses ->
@@ -21,10 +20,9 @@ class FavouritePosesViewModel(
                     poses = poses,
                     isLoading = false,
                 )
-            }
-            .stateIn(
+            }.stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
                 initialValue = FavouritePosesState(isLoading = true),
             )
 }

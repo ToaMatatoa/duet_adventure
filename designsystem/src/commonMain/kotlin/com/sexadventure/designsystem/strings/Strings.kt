@@ -37,6 +37,7 @@ object Strings {
      * ────────────────────────────────────────────── */
     object FavouritePoses {
         const val SCREEN_TITLE = "Favourites"
+        const val NO_FAVOURITE_POSES = "No favourite poses yet."
     }
 
     /* ──────────────────────────────────────────────
