@@ -3,6 +3,7 @@ package com.sexadventure.presentation.favouriteposes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sexadventure.STOP_TIMEOUT_MILLIS
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetFavouritePosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
@@ -25,7 +26,7 @@ class FavouritePosesViewModel(
                 )
             }.stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = STOP_TIMEOUT_MILLIS),
                 initialValue = FavouritePosesState(isLoading = true),
             )
 

@@ -119,7 +119,7 @@ fun AllPosesScreen(
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
-                            image = resolveImage(pose.imageUrl),
+                            image = resolveImage(imageName = pose.imageUrl),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,

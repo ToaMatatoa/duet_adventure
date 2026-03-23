@@ -53,6 +53,7 @@ object Strings {
      * ────────────────────────────────────────────── */
     object Profile {
         const val SCREEN_TITLE = "Profile"
+        const val GET_RANDOM_POSE = "Get random pose"
     }
 
     /* ──────────────────────────────────────────────

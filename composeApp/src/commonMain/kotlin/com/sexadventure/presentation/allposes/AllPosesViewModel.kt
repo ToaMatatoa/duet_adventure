@@ -3,6 +3,7 @@ package com.sexadventure.presentation.allposes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sexadventure.STOP_TIMEOUT_MILLIS
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
@@ -22,7 +23,6 @@ class AllPosesViewModel(
     private val seedPosesUseCase: SeedPosesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
 ) : ViewModel() {
-
     private val selectedCategory = MutableStateFlow(value = PoseCategory.ALL)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,7 +39,7 @@ class AllPosesViewModel(
                     }
             }.stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = STOP_TIMEOUT_MILLIS),
                 initialValue = AllPosesState(isLoading = true),
             )
 

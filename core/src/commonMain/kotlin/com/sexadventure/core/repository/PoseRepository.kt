@@ -10,6 +10,7 @@ interface PoseRepository {
     suspend fun getPoseById(id: Int): PoseEntity?
     suspend fun getPredefinedPoses(): List<PoseEntity>
     suspend fun getUserCreatedPoses(): List<PoseEntity>
+    fun getPosesCount(): Flow<Int>
     suspend fun getPredefinedCount(): Int
     suspend fun insertAllIgnore(poses: List<PoseEntity>)
     suspend fun upsertPose(pose: PoseEntity)
@@ -36,6 +37,9 @@ class PoseRepositoryImpl(
 
     override suspend fun getUserCreatedPoses(): List<PoseEntity> =
         poseDao.getUserCreatedPoses()
+
+    override fun getPosesCount(): Flow<Int> =
+        poseDao.getPosesCount()
 
     override suspend fun getPredefinedCount(): Int =
         poseDao.getPredefinedCount()

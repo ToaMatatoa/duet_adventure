@@ -7,6 +7,5 @@ import com.sexadventure.domain.model.PoseData
 class GetPoseByIdUseCase(
     private val repository: PoseRepository,
 ) {
-    suspend operator fun invoke(id: Int): PoseData? =
-        repository.getPoseById(id)?.toDomain()
+    suspend operator fun invoke(id: Int): PoseData? = repository.getPoseById(id)?.toDomain()
 }
