@@ -67,7 +67,11 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                         }
 
                         entry<Route.Profile> {
-                            ProfileRoot()
+                            ProfileRoot(
+                                onOpenPoseDetails = { poseId ->
+                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
+                                },
+                            )
                         }
                     },
                 ),
