@@ -9,6 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.sexadventure.presentation.allposes.AllPosesRoot
+import com.sexadventure.presentation.detailpose.DetailPoseRoot
+import com.sexadventure.presentation.favouriteposes.FavouritePosesRoot
+import com.sexadventure.presentation.profile.ProfileRoot
 
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
@@ -36,15 +40,24 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                     .fillMaxSize()
                     .padding(paddingValues = innerPadding),
             onBack = navigator::goBack,
-            entries = navigationState.toEntries(
+            entries =
+                navigationState.toEntries(
                     entryProvider {
-                        entry<Route.AllPoses> { }
+                        entry<Route.AllPoses> {
+                            AllPosesRoot()
+                        }
 
-                        entry<Route.FavouritePoses> { }
+                        entry<Route.FavouritePoses> {
+                            FavouritePosesRoot()
+                        }
 
-                        entry<Route.PoseDetails> { entry -> }
+                        entry<Route.PoseDetails> { entry ->
+                            DetailPoseRoot()
+                        }
 
-                        entry<Route.Profile> { }
+                        entry<Route.Profile> {
+                            ProfileRoot()
+                        }
                     },
                 ),
         )
