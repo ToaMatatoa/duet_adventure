@@ -71,7 +71,8 @@ val DarkOutline = Color(0xFF3A3A3A)
 // ──────────────────────────────────────────────
 
 /** Favorite / like icon filled state — same in both themes */
-val Heart = Color(0xFFFF6B6B)
+val FlameColor = Color(0xFFFF6B6B)
+val GoldenColor = Color(0xFFFFB300)
 
 val LightAppColorScheme = lightColorScheme(
     background = LightBackground,

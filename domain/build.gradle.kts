@@ -26,6 +26,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core)
 
+            implementation(libs.compose.runtime)
+
             // koin
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)

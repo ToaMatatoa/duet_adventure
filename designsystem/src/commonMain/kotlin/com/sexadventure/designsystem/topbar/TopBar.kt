@@ -44,7 +44,7 @@ fun TopBar(
                 }
             }
         },
-        windowInsets = WindowInsets(top = 16.dp),
+        windowInsets = WindowInsets(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 scrolledContainerColor = MaterialTheme.colorScheme.background,
