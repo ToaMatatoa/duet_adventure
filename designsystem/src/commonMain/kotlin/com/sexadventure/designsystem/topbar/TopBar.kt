@@ -2,6 +2,7 @@ package com.sexadventure.designsystem.topbar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,23 +17,20 @@ import androidx.compose.ui.unit.dp
 import com.sexadventure.designsystem.strings.Strings
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
+import compose.icons.tablericons.ListSearch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     title: String,
     showBackButton: Boolean,
-    onBackClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    showActions: Boolean = false,
+    onBackClick: () -> Unit = {},
+    onShowFilterClick: () -> Unit = {},
+    actionContent: @Composable () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        },
         navigationIcon = {
             AnimatedVisibility(visible = showBackButton) {
                 IconButton(onClick = onBackClick) {
@@ -42,6 +40,26 @@ fun TopBar(
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 }
+            }
+        },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        },
+        actions = {
+            AnimatedVisibility(visible = showActions) {
+                IconButton(onClick = onShowFilterClick) {
+                    Icon(
+                        imageVector = TablerIcons.ListSearch,
+                        contentDescription = Strings.Common.BACK,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(32.dp),
+                    )
+                }
+                actionContent()
             }
         },
         windowInsets = WindowInsets(top = 0.dp),

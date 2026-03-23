@@ -3,28 +3,40 @@ package com.sexadventure.presentation.allposes
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
-import com.sexadventure.domain.usecase.GetAllPosesUseCase
+import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AllPosesViewModel(
-    getAllPosesUseCase: GetAllPosesUseCase,
+    private val getPosesByCategoryUseCase: GetPosesByCategoryUseCase,
     private val seedPosesUseCase: SeedPosesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
 ) : ViewModel() {
+
+    private val selectedCategory = MutableStateFlow(value = PoseCategory.ALL)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<AllPosesState> =
-        getAllPosesUseCase()
-            .map { poses ->
-                AllPosesState(
-                    poses = poses,
-                    isLoading = false,
-                )
+        selectedCategory
+            .flatMapLatest { category ->
+                getPosesByCategoryUseCase(category)
+                    .map { poses ->
+                        AllPosesState(
+                            poses = poses,
+                            selectedCategory = category,
+                            isLoading = false,
+                        )
+                    }
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
@@ -35,6 +47,10 @@ class AllPosesViewModel(
         viewModelScope.launch {
             seedPosesUseCase()
         }
+    }
+
+    fun selectCategory(category: PoseCategory) {
+        selectedCategory.value = category
     }
 
     fun toggleFavourite(
@@ -50,5 +66,6 @@ class AllPosesViewModel(
 @Immutable
 data class AllPosesState(
     val poses: List<PoseData> = emptyList(),
+    val selectedCategory: PoseCategory = PoseCategory.ALL,
     val isLoading: Boolean = false,
 )

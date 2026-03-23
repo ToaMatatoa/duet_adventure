@@ -17,6 +17,7 @@ fun AllPosesRoot(
         state = state,
         onPoseClick = onPoseClick,
         onFavouriteClick = viewModel::toggleFavourite,
+        onCategorySelect = viewModel::selectCategory,
         modifier = modifier,
     )
 }
