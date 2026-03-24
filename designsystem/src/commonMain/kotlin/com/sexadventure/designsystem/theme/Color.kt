@@ -67,10 +67,9 @@ val DarkOutline = Color(0xFF3A3A3A)
 
 // ──────────────────────────────────────────────
 // Semantic / custom colors (not part of MaterialTheme.colorScheme)
-// Use directly: e.g.  Icon(tint = Heart)
+// Use directly: e.g.  Icon(tint = FlameColor)
 // ──────────────────────────────────────────────
 
-/** Favorite / like icon filled state — same in both themes */
 val FlameColor = Color(0xFFFF6B6B)
 val GoldenColor = Color(0xFFFFB300)
 
