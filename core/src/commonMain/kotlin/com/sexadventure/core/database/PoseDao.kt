@@ -23,11 +23,15 @@ interface PoseDao {
 
     /** Quick check: how many poses are in the DB */
     @Query("SELECT COUNT(*) FROM pose")
-    fun getPosesCount(): Flow<Int>
+    fun getPosesAmount(): Flow<Int>
 
     /** Quick check: how many predefined poses are in the DB */
     @Query("SELECT COUNT(*) FROM pose WHERE isUserCreated = 0")
-    suspend fun getPredefinedCount(): Int
+    suspend fun getPredefinedAmount(): Int
+
+    /** Quick check: how many user's poses are in the DB */
+    @Query("SELECT COUNT(*) FROM pose WHERE isUserCreated = 1")
+    suspend fun getUserPosesAmount(): Int
 
     @Query("SELECT * FROM pose ORDER BY id")
     fun getAllPoses(): Flow<List<PoseEntity>>

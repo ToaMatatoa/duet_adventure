@@ -14,6 +14,7 @@ import kotlinx.coroutines.IO
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class SexAdventureDatabase : RoomDatabase() {
     abstract fun getPoseDao(): PoseDao
+
     abstract fun getPoseOfTheDayDao(): PoseOfTheDayDao
 }
 

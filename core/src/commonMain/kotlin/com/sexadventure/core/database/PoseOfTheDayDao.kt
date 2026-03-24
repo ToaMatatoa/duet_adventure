@@ -5,7 +5,8 @@ import androidx.room.Upsert
 @Dao
 interface PoseOfTheDayDao {
     @Query("SELECT * FROM pose_of_the_day WHERE id = 1")
-    suspend fun get(): PoseOfTheDayEntity?
+    suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity?
+
     @Upsert
-    suspend fun upsert(entity: PoseOfTheDayEntity)
+    suspend fun upsertNecessaryInfoAboutPoseOfTheDay(entity: PoseOfTheDayEntity)
 }

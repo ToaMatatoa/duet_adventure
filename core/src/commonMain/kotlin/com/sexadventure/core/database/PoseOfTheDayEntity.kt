@@ -14,4 +14,3 @@ data class PoseOfTheDayEntity(
     val poseId: Int,
     val date: String,
 )
-
