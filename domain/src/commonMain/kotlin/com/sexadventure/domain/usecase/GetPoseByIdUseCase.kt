@@ -1,11 +1,11 @@
 package com.sexadventure.domain.usecase
 
 import com.sexadventure.core.repository.PoseRepository
-import com.sexadventure.domain.mapper.toDomain
+import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseData
 
 class GetPoseByIdUseCase(
     private val repository: PoseRepository,
 ) {
-    suspend operator fun invoke(id: Int): PoseData? = repository.getPoseById(id)?.toDomain()
+    suspend operator fun invoke(id: Int): PoseData? = repository.getPoseById(id)?.toPoseData()
 }

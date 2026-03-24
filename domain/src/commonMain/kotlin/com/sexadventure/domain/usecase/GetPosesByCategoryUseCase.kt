@@ -1,7 +1,7 @@
 package com.sexadventure.domain.usecase
 
 import com.sexadventure.core.repository.PoseRepository
-import com.sexadventure.domain.mapper.toDomain
+import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import kotlinx.coroutines.flow.Flow
@@ -15,5 +15,5 @@ class GetPosesByCategoryUseCase(
             repository.getAllPoses()
         } else {
             repository.getPosesByCategory(category.name.lowercase().replaceFirstChar { it.uppercase() })
-        }.map { poses -> poses.map { pose -> pose.toDomain() } }
+        }.map { poses -> poses.map { pose -> pose.toPoseData() } }
 }
