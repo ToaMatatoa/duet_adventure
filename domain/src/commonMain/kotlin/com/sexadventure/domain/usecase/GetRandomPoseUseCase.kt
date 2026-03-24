@@ -4,8 +4,8 @@ import com.sexadventure.core.repository.SinglePoseRepository
 import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseData
 
-class GetPoseByIdUseCase(
+class GetRandomPoseUseCase(
     private val singlePoseRepository: SinglePoseRepository,
 ) {
-    suspend operator fun invoke(id: Int): PoseData? = singlePoseRepository.getPoseById(id)?.toPoseData()
+    suspend operator fun invoke(): PoseData? = singlePoseRepository.getRandomPose()?.toPoseData()
 }

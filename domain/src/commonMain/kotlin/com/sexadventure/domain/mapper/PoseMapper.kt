@@ -3,7 +3,7 @@ package com.sexadventure.domain.mapper
 import com.sexadventure.core.database.PoseEntity
 import com.sexadventure.domain.model.PoseData
 
-fun PoseEntity.toDomain(): PoseData = PoseData(
+fun PoseEntity.toPoseData(): PoseData = PoseData(
     id = id,
     name = name,
     description = description,
@@ -15,7 +15,7 @@ fun PoseEntity.toDomain(): PoseData = PoseData(
     isUserCreated = isUserCreated,
 )
 
-fun PoseData.toEntity(): PoseEntity = PoseEntity(
+fun PoseData.toPoseEntity(): PoseEntity = PoseEntity(
     id = id,
     name = name,
     description = description,

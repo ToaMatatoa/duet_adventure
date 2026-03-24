@@ -1,10 +1,10 @@
 package com.sexadventure.domain.usecase
 
-import com.sexadventure.core.repository.PoseRepository
+import com.sexadventure.core.repository.PoseAmountRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetPosesCountUseCase(
-    private val repository: PoseRepository,
+    private val poseAmountRepository: PoseAmountRepository,
 ) {
-    operator fun invoke(): Flow<Int> = repository.getPosesCount()
+    operator fun invoke(): Flow<Int> = poseAmountRepository.getPosesAmount()
 }

@@ -8,14 +8,10 @@ package com.sexadventure.designsystem.strings
  * Usage:  Text(text = Strings.AllPoses.screenTitle)
  */
 object Strings {
-    /**
-     * App
-     */
-    const val APP_NAME = "Sex Adventure"
 
-    /**
-     * Bottom navigation
-     */
+    /* ──────────────────────────────────────────────
+     *  Bottom navigation
+     * ────────────────────────────────────────────── */
     object Nav {
         const val TAB_ALL = "All"
 
@@ -54,6 +50,8 @@ object Strings {
     object Profile {
         const val SCREEN_TITLE = "Profile"
         const val GET_RANDOM_POSE = "Get random pose"
+        const val SHOW_POSE_OF_THE_DAY = "Show pose of the day"
+        const val HIDE_POSE_OF_THE_DAY = "Hide pose of the day"
     }
 
     /* ──────────────────────────────────────────────
@@ -76,7 +74,6 @@ object Strings {
         const val POSE_IMAGE = "Pose image"
         const val POSE_NO_IMAGE = "No image available"
 
-        /** Content-description for the difficulty icon in a card */
         const val POSE_DIFFICULTY = "Pose difficulty"
         const val POSE_PERSONAL_SCORE = "User personal score"
 

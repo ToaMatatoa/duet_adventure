@@ -1,7 +1,8 @@
 package com.sexadventure.domain.usecase
 
-import com.sexadventure.core.repository.PoseRepository
-import com.sexadventure.domain.mapper.toEntity
+import com.sexadventure.core.repository.PoseAmountRepository
+import com.sexadventure.core.repository.MultiplePoseRepository
+import com.sexadventure.domain.mapper.toPoseEntity
 import com.sexadventure.domain.provider.PredefinedPosesProvider
 
 /**
@@ -10,13 +11,14 @@ import com.sexadventure.domain.provider.PredefinedPosesProvider
  * and uses insertAllIgnore so existing poses are never overwritten.
  */
 class SeedPosesUseCase(
-    private val repository: PoseRepository,
+    private val multiplePoseRepository: MultiplePoseRepository,
+    private val poseAmountRepository: PoseAmountRepository,
     private val posesProvider: PredefinedPosesProvider,
 ) {
     suspend operator fun invoke() {
-        if (repository.getPredefinedCount() > 0) return
+        if (poseAmountRepository.getPredefinedAmount() > 0) return
 
-        val poses = posesProvider.getPoses().map { it.toEntity() }
-        repository.insertAllIgnore(poses)
+        val poses = posesProvider.getPoses().map { it.toPoseEntity() }
+        multiplePoseRepository.insertAllIgnore(poses)
     }
 }

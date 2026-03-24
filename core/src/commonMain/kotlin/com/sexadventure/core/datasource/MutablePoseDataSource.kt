@@ -1,0 +1,50 @@
+package com.sexadventure.core.datasource
+
+import com.sexadventure.core.database.PoseDao
+import com.sexadventure.core.database.PoseEntity
+import com.sexadventure.core.database.PoseOfTheDayDao
+import com.sexadventure.core.database.PoseOfTheDayEntity
+
+interface MutablePoseDataSource {
+    suspend fun insertAllIgnore(poses: List<PoseEntity>)
+
+    suspend fun upsertPose(pose: PoseEntity)
+
+    suspend fun saveNecessaryInfoAboutPoseOfTheDay(entity: PoseOfTheDayEntity)
+
+    suspend fun updateFavorite(
+        id: Int,
+        isFavorite: Boolean,
+    )
+
+    suspend fun updatePersonalScore(
+        id: Int,
+        score: Int,
+    )
+
+    suspend fun deletePose(id: Int)
+}
+
+class MutablePoseDataSourceImpl(
+    private val poseDao: PoseDao,
+    private val poseOfTheDayDao: PoseOfTheDayDao,
+) : MutablePoseDataSource {
+    override suspend fun insertAllIgnore(poses: List<PoseEntity>) = poseDao.insertAllIgnore(poses)
+
+    override suspend fun upsertPose(pose: PoseEntity) = poseDao.upsertPose(pose)
+
+    override suspend fun saveNecessaryInfoAboutPoseOfTheDay(entity: PoseOfTheDayEntity) =
+        poseOfTheDayDao.upsertNecessaryInfoAboutPoseOfTheDay(entity)
+
+    override suspend fun updateFavorite(
+        id: Int,
+        isFavorite: Boolean,
+    ) = poseDao.updateFavorite(id, isFavorite)
+
+    override suspend fun updatePersonalScore(
+        id: Int,
+        score: Int,
+    ) = poseDao.updatePersonalScore(id, score)
+
+    override suspend fun deletePose(id: Int) = poseDao.deletePose(id)
+}
