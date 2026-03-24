@@ -19,7 +19,7 @@ interface PoseDao {
     @Upsert
     suspend fun upsertPose(pose: PoseEntity)
 
-    // ── Read ────────────────────────────────────────────────────────
+    // ── Read poses amount ──────────────────────────────────────────────
 
     /** Quick check: how many poses are in the DB */
     @Query("SELECT COUNT(*) FROM pose")
@@ -33,8 +33,18 @@ interface PoseDao {
     @Query("SELECT COUNT(*) FROM pose WHERE isUserCreated = 1")
     suspend fun getUserPosesAmount(): Int
 
+    // ── Read poses ────────────────────────────────────────────────────────
+
     @Query("SELECT * FROM pose ORDER BY id")
     fun getAllPoses(): Flow<List<PoseEntity>>
+
+    /** Only predefined (immutable) poses */
+    @Query("SELECT * FROM pose WHERE isUserCreated = 0 ORDER BY id")
+    suspend fun getPredefinedPoses(): List<PoseEntity>
+
+    /** Only user-created (mutable) poses */
+    @Query("SELECT * FROM pose WHERE isUserCreated = 1 ORDER BY id")
+    suspend fun getUserCreatedPoses(): List<PoseEntity>
 
     /** Poses whose category column contains the given substring (e.g. "Classic") */
     @Query("SELECT * FROM pose WHERE category LIKE '%' || :category || '%' ORDER BY id")
@@ -47,15 +57,7 @@ interface PoseDao {
     @Query("SELECT * FROM pose ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomPose(): PoseEntity?
 
-    /** Only predefined (immutable) poses */
-    @Query("SELECT * FROM pose WHERE isUserCreated = 0 ORDER BY id")
-    suspend fun getPredefinedPoses(): List<PoseEntity>
-
-    /** Only user-created (mutable) poses */
-    @Query("SELECT * FROM pose WHERE isUserCreated = 1 ORDER BY id")
-    suspend fun getUserCreatedPoses(): List<PoseEntity>
-
-    // ── Safe partial updates for predefined poses ───────────────────
+    // ── Safe partial updates for pose ──────────────────────────────────────
 
     /** Toggle favorite – allowed even on predefined poses */
     @Query("UPDATE pose SET isFavorite = :isFavorite WHERE id = :id")
@@ -71,7 +73,7 @@ interface PoseDao {
         score: Int,
     )
 
-    // ── Delete ──────────────────────────────────────────────────────
+    // ── Delete pose ──────────────────────────────────────────────────────
 
     @Query("DELETE FROM pose WHERE id = :id")
     suspend fun deletePose(id: Int)
