@@ -37,28 +37,26 @@ class ProfileViewModel(
             initialValue = ProfileState(),
         )
 
-    fun loadRandomPoseWhenResume(id: Int) {
+    /** Re-fetches visible poses from Room so favourite/score changes are reflected. */
+    fun refreshVisiblePoses() {
+        val current = _state.value
         viewModelScope.launch {
-            val pose = getPoseByIdUseCase(id)
-            _state.update { it.copy(randomPose = pose) }
-        }
-    }
-
-    fun loadPoseOfTheDayWhenResume(id: Int) {
-        viewModelScope.launch {
-            val pose = getPoseByIdUseCase(id)
-            _state.update { it.copy(poseOfTheDay = pose) }
+            val freshRandomPose = current.randomPose?.id?.let { getPoseByIdUseCase(id = it) }
+            val freshPoseOfTheDay = current.poseOfTheDay?.id?.let { getPoseByIdUseCase(id = it) }
+            _state.update {
+                it.copy(
+                    randomPose = freshRandomPose ?: it.randomPose,
+                    poseOfTheDay = freshPoseOfTheDay ?: it.poseOfTheDay,
+                )
+            }
         }
     }
 
     fun getRandomPose() {
-        val count = state.value.totalPoses
-        if (count < 0) return
         viewModelScope.launch {
-            getRandomPoseUseCase.invoke()
-                ?.let { pose ->
-                    _state.update { it.copy(randomPose = pose) }
-                }
+            getRandomPoseUseCase()?.let { pose ->
+                _state.update { it.copy(randomPose = pose) }
+            }
         }
     }
 

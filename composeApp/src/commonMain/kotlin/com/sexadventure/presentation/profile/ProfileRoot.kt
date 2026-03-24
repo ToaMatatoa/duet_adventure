@@ -15,13 +15,7 @@ fun ProfileRoot(
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     LifecycleResumeEffect(Unit) {
-        if (state.randomPose != null) {
-            viewModel.loadRandomPoseWhenResume(state.randomPose.id)
-        }
-        if (state.poseOfTheDay != null) {
-            viewModel.loadPoseOfTheDayWhenResume(state.poseOfTheDay.id)
-        }
-
+        viewModel.refreshVisiblePoses()
         onPauseOrDispose { }
     }
 

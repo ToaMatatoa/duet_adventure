@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.sexadventure.designsystem.listitem.ListItem
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
+import com.sexadventure.domain.model.PoseData
 import com.sexadventure.mapper.resolveImage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.X
@@ -53,28 +56,35 @@ fun ProfileScreen(
             showBackButton = false,
         )
 
-        RandomPoseElement(
-            state = state,
-            onGetRandomPose = onGetRandomPose,
-            onFavouriteClick = onFavouriteClick,
-            onOpenPoseDetails = onOpenPoseDetails,
-            onRemovePose = onRemovePose,
-            modifier = Modifier.padding(top = 16.dp),
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            RandomPoseElement(
+                pose = state.randomPose,
+                onGetRandomPose = onGetRandomPose,
+                onFavouriteClick = onFavouriteClick,
+                onOpenPoseDetails = onOpenPoseDetails,
+                onRemovePose = onRemovePose,
+                modifier = Modifier.padding(top = 16.dp),
+            )
 
-        PoseOfTheDayElement(
-            state = state,
-            onToggle = onTogglePoseOfTheDay,
-            onFavouriteClick = onFavouriteClick,
-            onOpenPoseDetails = onOpenPoseDetails,
-            modifier = Modifier.padding(top = 16.dp),
-        )
+            PoseOfTheDayElement(
+                pose = state.poseOfTheDay,
+                isVisible = state.showPoseOfTheDay,
+                onToggle = onTogglePoseOfTheDay,
+                onFavouriteClick = onFavouriteClick,
+                onOpenPoseDetails = onOpenPoseDetails,
+                modifier = Modifier.padding(top = 16.dp),
+            )
+        }
     }
 }
 
 @Composable
 private fun RandomPoseElement(
-    state: ProfileState,
+    pose: PoseData?,
     onGetRandomPose: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onOpenPoseDetails: (Int) -> Unit,
@@ -101,7 +111,7 @@ private fun RandomPoseElement(
                 )
             }
 
-            AnimatedVisibility(visible = state.randomPose != null) {
+            AnimatedVisibility(visible = pose != null) {
                 Box(
                     modifier = Modifier
                         .size(size = 56.dp)
@@ -124,18 +134,11 @@ private fun RandomPoseElement(
             }
         }
 
-        if (state.randomPose != null) {
-            ListItem(
-                title = state.randomPose.name,
-                description = state.randomPose.description,
-                onClick = { onOpenPoseDetails(state.randomPose.id) },
-                image = resolveImage(imageName = state.randomPose.imageUrl),
-                category = state.randomPose.category,
-                difficulty = state.randomPose.difficulty,
-                personalScore = state.randomPose.personalScore,
-                isFavourite = state.randomPose.isFavorite,
-                onFavouriteClick = { onFavouriteClick(state.randomPose.id, state.randomPose.isFavorite) },
-                modifier = Modifier.padding(top = 8.dp),
+        if (pose != null) {
+            PoseListItem(
+                pose = pose,
+                onOpenPoseDetails = onOpenPoseDetails,
+                onFavouriteClick = onFavouriteClick,
             )
         }
     }
@@ -143,7 +146,8 @@ private fun RandomPoseElement(
 
 @Composable
 private fun PoseOfTheDayElement(
-    state: ProfileState,
+    pose: PoseData?,
+    isVisible: Boolean,
     onToggle: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onOpenPoseDetails: (Int) -> Unit,
@@ -161,7 +165,7 @@ private fun PoseOfTheDayElement(
                 .height(height = 56.dp),
         ) {
             Text(
-                text = if (state.showPoseOfTheDay) {
+                text = if (isVisible) {
                     Strings.Profile.HIDE_POSE_OF_THE_DAY
                 } else {
                     Strings.Profile.SHOW_POSE_OF_THE_DAY
@@ -171,23 +175,37 @@ private fun PoseOfTheDayElement(
             )
         }
 
-        AnimatedVisibility(visible = state.showPoseOfTheDay && state.poseOfTheDay != null) {
-            state.poseOfTheDay?.let { pose ->
-                ListItem(
-                    title = pose.name,
-                    description = pose.description,
-                    onClick = { onOpenPoseDetails(pose.id) },
-                    image = resolveImage(imageName = pose.imageUrl),
-                    category = pose.category,
-                    difficulty = pose.difficulty,
-                    personalScore = pose.personalScore,
-                    isFavourite = pose.isFavorite,
-                    onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
-                    modifier = Modifier.padding(top = 8.dp),
+        AnimatedVisibility(visible = isVisible && pose != null) {
+            pose?.let {
+                PoseListItem(
+                    pose = it,
+                    onOpenPoseDetails = onOpenPoseDetails,
+                    onFavouriteClick = onFavouriteClick,
                 )
             }
         }
     }
+}
+
+@Composable
+private fun PoseListItem(
+    pose: PoseData,
+    onOpenPoseDetails: (Int) -> Unit,
+    onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ListItem(
+        title = pose.name,
+        description = pose.description,
+        onClick = { onOpenPoseDetails(pose.id) },
+        image = resolveImage(imageName = pose.imageUrl),
+        category = pose.category,
+        difficulty = pose.difficulty,
+        personalScore = pose.personalScore,
+        isFavourite = pose.isFavorite,
+        onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
+        modifier = modifier.padding(top = 8.dp),
+    )
 }
 
 @Preview(showBackground = true)
