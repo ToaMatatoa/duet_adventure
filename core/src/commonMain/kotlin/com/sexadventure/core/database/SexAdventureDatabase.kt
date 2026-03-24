@@ -10,7 +10,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [PoseEntity::class, PoseOfTheDayEntity::class], version = 3)
+@Database(entities = [PoseEntity::class, PoseOfTheDayEntity::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class SexAdventureDatabase : RoomDatabase() {
     abstract fun getPoseDao(): PoseDao
@@ -25,7 +25,6 @@ expect object AppDatabaseConstructor : RoomDatabaseConstructor<SexAdventureDatab
 
 fun getRoomDatabase(builder: RoomDatabase.Builder<SexAdventureDatabase>): SexAdventureDatabase =
     builder
-        .addMigrations()
         .fallbackToDestructiveMigration(true)
         .fallbackToDestructiveMigrationOnDowngrade(true)
         .setDriver(BundledSQLiteDriver())

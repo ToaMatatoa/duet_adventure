@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "778882114c56fa20b255a591b8b253b3",
+    "identityHash": "235b5fd255a2b4be21d61eb544ce2b0d",
     "entities": [
       {
         "tableName": "pose",
@@ -68,12 +68,53 @@
           "columnNames": [
             "id"
           ]
+        },
+        "indices": [
+          {
+            "name": "index_pose_name",
+            "unique": true,
+            "columnNames": [
+              "name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_pose_name` ON `${TABLE_NAME}` (`name`)"
+          }
+        ]
+      },
+      {
+        "tableName": "pose_of_the_day",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `poseId` INTEGER NOT NULL, `date` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "poseId",
+            "columnName": "poseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
         }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '778882114c56fa20b255a591b8b253b3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '235b5fd255a2b4be21d61eb544ce2b0d')"
     ]
   }
 }
