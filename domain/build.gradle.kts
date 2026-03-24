@@ -27,6 +27,7 @@ kotlin {
             implementation(projects.core)
 
             implementation(libs.compose.runtime)
+            implementation(libs.kotlinx.datetime)
 
             // koin
             implementation(project.dependencies.platform(libs.koin.bom))

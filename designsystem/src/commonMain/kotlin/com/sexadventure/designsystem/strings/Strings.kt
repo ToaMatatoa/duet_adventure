@@ -54,6 +54,8 @@ object Strings {
     object Profile {
         const val SCREEN_TITLE = "Profile"
         const val GET_RANDOM_POSE = "Get random pose"
+        const val SHOW_POSE_OF_THE_DAY = "Show pose of the day"
+        const val HIDE_POSE_OF_THE_DAY = "Hide pose of the day"
     }
 
     /* ──────────────────────────────────────────────
