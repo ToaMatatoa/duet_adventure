@@ -34,6 +34,7 @@ import compose.icons.tablericons.X
 fun ProfileScreen(
     state: ProfileState,
     onGetRandomPose: () -> Unit,
+    onTogglePoseOfTheDay: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onOpenPoseDetails: (Int) -> Unit,
     onRemovePose: () -> Unit,
@@ -51,7 +52,7 @@ fun ProfileScreen(
             title = Strings.Profile.SCREEN_TITLE,
             showBackButton = false,
         )
-        
+
         RandomPoseElement(
             state = state,
             onGetRandomPose = onGetRandomPose,
@@ -61,7 +62,13 @@ fun ProfileScreen(
             modifier = Modifier.padding(top = 16.dp),
         )
 
-
+        PoseOfTheDayElement(
+            state = state,
+            onToggle = onTogglePoseOfTheDay,
+            onFavouriteClick = onFavouriteClick,
+            onOpenPoseDetails = onOpenPoseDetails,
+            modifier = Modifier.padding(top = 16.dp),
+        )
     }
 }
 
@@ -94,16 +101,16 @@ private fun RandomPoseElement(
                 )
             }
 
-            AnimatedVisibility(visible = state.pose != null) {
+            AnimatedVisibility(visible = state.randomPose != null) {
                 Box(
-                    modifier =
-                        Modifier
-                            .size(size = 56.dp)
-                            .clip(shape = MaterialTheme.shapes.medium)
-                            .background(
-                                color = MaterialTheme.colorScheme.surface,
-                                shape = MaterialTheme.shapes.medium,
-                            ).clickable(onClick = onRemovePose),
+                    modifier = Modifier
+                        .size(size = 56.dp)
+                        .clip(shape = MaterialTheme.shapes.medium)
+                        .background(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shapes.medium,
+                        )
+                        .clickable(onClick = onRemovePose),
                 ) {
                     Icon(
                         imageVector = TablerIcons.X,
@@ -117,19 +124,68 @@ private fun RandomPoseElement(
             }
         }
 
-        if (state.pose != null) {
+        if (state.randomPose != null) {
             ListItem(
-                title = state.pose.name,
-                description = state.pose.description,
-                onClick = { onOpenPoseDetails(state.pose.id) },
-                image = resolveImage(imageName = state.pose.imageUrl),
-                category = state.pose.category,
-                difficulty = state.pose.difficulty,
-                personalScore = state.pose.personalScore,
-                isFavourite = state.pose.isFavorite,
-                onFavouriteClick = { onFavouriteClick(state.pose.id, state.pose.isFavorite) },
+                title = state.randomPose.name,
+                description = state.randomPose.description,
+                onClick = { onOpenPoseDetails(state.randomPose.id) },
+                image = resolveImage(imageName = state.randomPose.imageUrl),
+                category = state.randomPose.category,
+                difficulty = state.randomPose.difficulty,
+                personalScore = state.randomPose.personalScore,
+                isFavourite = state.randomPose.isFavorite,
+                onFavouriteClick = { onFavouriteClick(state.randomPose.id, state.randomPose.isFavorite) },
                 modifier = Modifier.padding(top = 8.dp),
             )
+        }
+    }
+}
+
+@Composable
+private fun PoseOfTheDayElement(
+    state: ProfileState,
+    onToggle: () -> Unit,
+    onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
+    onOpenPoseDetails: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        TextButton(
+            onClick = onToggle,
+            shape = MaterialTheme.shapes.medium,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = 56.dp),
+        ) {
+            Text(
+                text = if (state.showPoseOfTheDay) {
+                    Strings.Profile.HIDE_POSE_OF_THE_DAY
+                } else {
+                    Strings.Profile.SHOW_POSE_OF_THE_DAY
+                },
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+
+        AnimatedVisibility(visible = state.showPoseOfTheDay && state.poseOfTheDay != null) {
+            state.poseOfTheDay?.let { pose ->
+                ListItem(
+                    title = pose.name,
+                    description = pose.description,
+                    onClick = { onOpenPoseDetails(pose.id) },
+                    image = resolveImage(imageName = pose.imageUrl),
+                    category = pose.category,
+                    difficulty = pose.difficulty,
+                    personalScore = pose.personalScore,
+                    isFavourite = pose.isFavorite,
+                    onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
         }
     }
 }
@@ -143,5 +199,6 @@ private fun ProfileScreenPreview() {
         onFavouriteClick = { _, _ -> },
         onOpenPoseDetails = {},
         onRemovePose = {},
+        onTogglePoseOfTheDay = {},
     )
 }

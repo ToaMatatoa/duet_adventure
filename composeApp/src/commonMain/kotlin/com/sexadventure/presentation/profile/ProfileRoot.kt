@@ -15,8 +15,11 @@ fun ProfileRoot(
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     LifecycleResumeEffect(Unit) {
-        if (state.pose != null) {
-            viewModel.loadPose(state.pose.id)
+        if (state.randomPose != null) {
+            viewModel.loadRandomPoseWhenResume(state.randomPose.id)
+        }
+        if (state.poseOfTheDay != null) {
+            viewModel.loadPoseOfTheDayWhenResume(state.poseOfTheDay.id)
         }
 
         onPauseOrDispose { }
@@ -25,9 +28,10 @@ fun ProfileRoot(
     ProfileScreen(
         state = state,
         onGetRandomPose = viewModel::getRandomPose,
+        onTogglePoseOfTheDay = viewModel::togglePoseOfTheDay,
         onFavouriteClick = viewModel::toggleFavourite,
         onOpenPoseDetails = onOpenPoseDetails,
-        onRemovePose = viewModel::onRemovePose,
+        onRemovePose = viewModel::onRemoveRandomPose,
         modifier = modifier,
     )
 }
