@@ -17,6 +17,7 @@ interface PoseRepository {
     suspend fun updateFavorite(id: Int, isFavorite: Boolean)
     suspend fun updatePersonalScore(id: Int, score: Int)
     suspend fun deletePose(id: Int)
+    suspend fun getRandomPose(): PoseEntity?
 }
 
 class PoseRepositoryImpl(
@@ -58,5 +59,8 @@ class PoseRepositoryImpl(
 
     override suspend fun deletePose(id: Int) =
         poseDao.deletePose(id)
+
+    override suspend fun getRandomPose(): PoseEntity? =
+        poseDao.getRandomPose()
 }
 

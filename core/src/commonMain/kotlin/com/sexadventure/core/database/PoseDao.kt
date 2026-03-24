@@ -39,6 +39,10 @@ interface PoseDao {
     @Query("SELECT * FROM pose WHERE id = :id")
     suspend fun getPoseById(id: Int): PoseEntity?
 
+    /** Pick one random pose from the whole table */
+    @Query("SELECT * FROM pose ORDER BY RANDOM() LIMIT 1")
+    suspend fun getRandomPose(): PoseEntity?
+
     /** Only predefined (immutable) poses */
     @Query("SELECT * FROM pose WHERE isUserCreated = 0 ORDER BY id")
     suspend fun getPredefinedPoses(): List<PoseEntity>

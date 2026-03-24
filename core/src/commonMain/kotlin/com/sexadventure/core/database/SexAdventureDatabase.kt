@@ -10,10 +10,11 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [PoseEntity::class], version = 2)
+@Database(entities = [PoseEntity::class, PoseOfTheDayEntity::class], version = 3)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class SexAdventureDatabase : RoomDatabase() {
     abstract fun getPoseDao(): PoseDao
+    abstract fun getPoseOfTheDayDao(): PoseOfTheDayDao
 }
 
 // The Room compiler generates the `actual` implementations.
@@ -32,3 +33,5 @@ fun getRoomDatabase(builder: RoomDatabase.Builder<SexAdventureDatabase>): SexAdv
         .build()
 
 fun getPoseDao(sexAdventureDatabase: SexAdventureDatabase) = sexAdventureDatabase.getPoseDao()
+
+fun getPoseOfTheDayDao(sexAdventureDatabase: SexAdventureDatabase) = sexAdventureDatabase.getPoseOfTheDayDao()
