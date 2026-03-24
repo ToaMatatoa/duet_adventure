@@ -1,11 +1,14 @@
 package com.sexadventure.domain.usecase
 
-import com.sexadventure.core.repository.PoseRepository
+import com.sexadventure.core.repository.SinglePoseRepository
 
 class ToggleFavouriteUseCase(
-    private val repository: PoseRepository,
+    private val singlePoseRepository: SinglePoseRepository,
 ) {
-    suspend operator fun invoke(id: Int, isFavorite: Boolean) {
-        repository.updateFavorite(id, isFavorite)
+    suspend operator fun invoke(
+        id: Int,
+        isFavorite: Boolean,
+    ) {
+        singlePoseRepository.updateFavorite(id, isFavorite)
     }
 }

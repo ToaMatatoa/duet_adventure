@@ -1,8 +1,7 @@
 package com.sexadventure.domain.usecase
 
 import com.sexadventure.core.database.PoseOfTheDayEntity
-import com.sexadventure.core.repository.PoseOfTheDayRepository
-import com.sexadventure.core.repository.PoseRepository
+import com.sexadventure.core.repository.SinglePoseRepository
 import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseData
 import kotlinx.datetime.Clock
@@ -18,20 +17,19 @@ import kotlinx.datetime.todayIn
  *  3. Otherwise → pick a random pose, persist its id + today's date, return it.
  */
 class GetPoseOfTheDayUseCase(
-    private val poseOfTheDayRepository: PoseOfTheDayRepository,
-    private val poseRepository: PoseRepository,
+    private val singlePoseRepository: SinglePoseRepository,
 ) {
     suspend operator fun invoke(): PoseData? {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault()).toString()
-        val existingPose = poseOfTheDayRepository.get()
+        val existingPose = singlePoseRepository.getNecessaryInfoAboutPoseOfTheDay()
 
         if (existingPose != null && existingPose.date == today) {
-            return poseRepository.getPoseById(existingPose.poseId)?.toPoseData()
+            return singlePoseRepository.getPoseById(existingPose.poseId)?.toPoseData()
         }
 
-        val randomPose = poseRepository.getRandomPose()?.toPoseData() ?: return null
+        val randomPose = singlePoseRepository.getRandomPose()?.toPoseData() ?: return null
 
-        poseOfTheDayRepository.save(
+        singlePoseRepository.saveNecessaryInfoAboutPoseOfTheDay(
             entity = PoseOfTheDayEntity(poseId = randomPose.id, date = today),
         )
 
