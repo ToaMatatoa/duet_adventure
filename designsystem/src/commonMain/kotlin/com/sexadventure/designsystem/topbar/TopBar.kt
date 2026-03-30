@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.sexadventure.designsystem.strings.Strings
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
+import compose.icons.tablericons.ArrowsDownUp
 import compose.icons.tablericons.ListSearch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,10 +26,12 @@ fun TopBar(
     title: String,
     showBackButton: Boolean,
     modifier: Modifier = Modifier,
-    showActions: Boolean = false,
+    showSearchFilter: Boolean = false,
+    showCategoryFilter: Boolean = false,
     onBackClick: () -> Unit = {},
-    onShowFilterClick: () -> Unit = {},
-    actionContent: @Composable () -> Unit = {},
+    onShowSearchFilterClick: () -> Unit = {},
+    onShowCategoryFilterClick: () -> Unit = {},
+    categoryFilterContent: @Composable () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
         navigationIcon = {
@@ -50,16 +53,26 @@ fun TopBar(
             )
         },
         actions = {
-            AnimatedVisibility(visible = showActions) {
-                IconButton(onClick = onShowFilterClick) {
+            AnimatedVisibility(visible = showSearchFilter) {
+                IconButton(onClick = onShowSearchFilterClick) {
                     Icon(
                         imageVector = TablerIcons.ListSearch,
                         contentDescription = Strings.Common.BACK,
                         tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(28.dp),
                     )
                 }
-                actionContent()
+            }
+            AnimatedVisibility(visible = showCategoryFilter) {
+                IconButton(onClick = onShowCategoryFilterClick) {
+                    Icon(
+                        imageVector = TablerIcons.ArrowsDownUp,
+                        contentDescription = Strings.Common.BACK,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+                categoryFilterContent()
             }
         },
         windowInsets = WindowInsets(top = 0.dp),
@@ -77,5 +90,7 @@ private fun TopBarPreview() {
     TopBar(
         title = Strings.AllPoses.SCREEN_TITLE,
         showBackButton = true,
+        showSearchFilter = true,
+        showCategoryFilter = true,
     )
 }
