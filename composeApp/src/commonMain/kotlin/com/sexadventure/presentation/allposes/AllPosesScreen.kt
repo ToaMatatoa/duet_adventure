@@ -1,5 +1,6 @@
 package com.sexadventure.presentation.allposes
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,18 +10,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -35,12 +43,18 @@ import com.sexadventure.mapper.resolveImage
 @Composable
 fun AllPosesScreen(
     state: AllPosesState,
+    searchQuery: String,
     onPoseClick: (Int) -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
     onCategorySelect: (PoseCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showFilterMenu by remember { mutableStateOf(value = false) }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val searchFocusRequester = remember { FocusRequester() }
+    var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
+    var showSearchFilterMenu by remember { mutableStateOf(value = false) }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -52,14 +66,29 @@ fun AllPosesScreen(
         TopBar(
             title = Strings.AllPoses.SCREEN_TITLE,
             showBackButton = false,
-            showActions = true,
-            onShowFilterClick = { showFilterMenu = true },
-            actionContent = {
+            showSearchFilter = true,
+            showCategoryFilter = true,
+            onShowSearchFilterClick = {
+                if (showSearchFilterMenu) {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    onSearchQueryChange("")
+                }
+                showSearchFilterMenu = !showSearchFilterMenu
+            },
+            onShowCategoryFilterClick = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+                onSearchQueryChange("")
+                showCategoryFilterMenu = true
+                showSearchFilterMenu = false
+            },
+            categoryFilterContent = {
                 DropdownMenu(
-                    expanded = showFilterMenu,
-                    onDismissRequest = { showFilterMenu = false },
+                    expanded = showCategoryFilterMenu,
+                    onDismissRequest = { showCategoryFilterMenu = false },
                     offset = DpOffset(x = -(16).dp, y = 8.dp),
-                    modifier = Modifier.fillMaxWidth(fraction = 0.3f)
+                    modifier = Modifier.fillMaxWidth(fraction = 0.3f),
                 ) {
                     PoseCategory.entries.forEach { category ->
                         DropdownMenuItem(
@@ -76,13 +105,36 @@ fun AllPosesScreen(
                             },
                             onClick = {
                                 onCategorySelect(category)
-                                showFilterMenu = false
+                                showCategoryFilterMenu = false
                             },
                         )
                     }
                 }
             },
         )
+
+        AnimatedVisibility(visible = showSearchFilterMenu) {
+            LaunchedEffect(Unit) {
+                searchFocusRequester.requestFocus()
+            }
+
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { newValue -> onSearchQueryChange(newValue) },
+                shape = RoundedCornerShape(size = 12.dp),
+                placeholder = {
+                    Text(
+                        text = "Enter pose name",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    )
+                },
+                modifier = Modifier
+                    .focusRequester(searchFocusRequester)
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+            )
+        }
 
         when {
             state.isLoading -> {
@@ -141,39 +193,41 @@ fun AllPosesScreen(
 private fun AllPosesScreenPreview() {
     AllPosesScreen(
         state = AllPosesState(
-            poses = listOf(
-                PoseData(
-                    id = 1,
-                    name = "Pose 1",
-                    description = "Description for Pose 1",
-                    category = "Category A",
-                    difficulty = 2,
-                    personalScore = 4,
-                    imageUrl = "sixty_nine",
-                    isFavorite = true,
-                ),
-                PoseData(
-                    id = 2,
-                    name = "Pose 2",
-                    description = "Description for Pose 2",
-                    category = "Category B",
-                    difficulty = 3,
-                    personalScore = 5,
-                    isFavorite = false,
-                ),
-                PoseData(
-                    id = 3,
-                    name = "Pose 3. Simply long name",
-                    description = "Very long description for pose 3. Some sexy pose. Lorem ipsum dolor sit amet.",
-                    category = "Oral",
-                    difficulty = 8,
-                    personalScore = 9,
-                    isFavorite = true,
-                ),
+                poses = listOf(
+                        PoseData(
+                            id = 1,
+                            name = "Pose 1",
+                            description = "Description for Pose 1",
+                            category = "Category A",
+                            difficulty = 2,
+                            personalScore = 4,
+                            imageUrl = "sixty_nine",
+                            isFavorite = true,
+                        ),
+                        PoseData(
+                            id = 2,
+                            name = "Pose 2",
+                            description = "Description for Pose 2",
+                            category = "Category B",
+                            difficulty = 3,
+                            personalScore = 5,
+                            isFavorite = false,
+                        ),
+                        PoseData(
+                            id = 3,
+                            name = "Pose 3. Simply long name",
+                            description = "Very long description for pose 3. Some sexy pose. Lorem ipsum dolor sit amet.",
+                            category = "Oral",
+                            difficulty = 8,
+                            personalScore = 9,
+                            isFavorite = true,
+                        ),
+                    ),
             ),
-        ),
+        searchQuery = "",
         onPoseClick = {},
         onFavouriteClick = { _, _ -> },
+        onSearchQueryChange = {},
         onCategorySelect = {},
     )
 }
@@ -183,8 +237,10 @@ private fun AllPosesScreenPreview() {
 private fun AllPosesScreenEmptyPreview() {
     AllPosesScreen(
         state = AllPosesState(),
+        searchQuery = "",
         onPoseClick = {},
         onFavouriteClick = { _, _ -> },
+        onSearchQueryChange = {},
         onCategorySelect = {},
     )
 }
@@ -194,8 +250,10 @@ private fun AllPosesScreenEmptyPreview() {
 private fun AllPosesScreenLoadingPreview() {
     AllPosesScreen(
         state = AllPosesState(isLoading = true),
+        searchQuery = "",
         onPoseClick = {},
         onFavouriteClick = { _, _ -> },
+        onSearchQueryChange = {},
         onCategorySelect = {},
     )
 }
