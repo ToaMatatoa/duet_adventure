@@ -7,6 +7,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.sexadventure.core.database.dao.PoseDao
+import com.sexadventure.core.database.dao.PoseOfTheDayDao
+import com.sexadventure.core.database.entity.PoseEntity
+import com.sexadventure.core.database.entity.PoseOfTheDayEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 

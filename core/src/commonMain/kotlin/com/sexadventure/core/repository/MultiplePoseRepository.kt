@@ -1,6 +1,6 @@
 package com.sexadventure.core.repository
 
-import com.sexadventure.core.database.PoseEntity
+import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.core.datasource.MutablePoseDataSource
 import com.sexadventure.core.datasource.PersistentPoseDataSource
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,6 @@
 package com.sexadventure.domain.mapper
 
-import com.sexadventure.core.database.PoseEntity
+import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.domain.model.PoseData
 
 fun PoseEntity.toPoseData(): PoseData = PoseData(

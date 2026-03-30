@@ -1,10 +1,11 @@
-package com.sexadventure.core.database
+package com.sexadventure.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import com.sexadventure.core.database.entity.PoseEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -12,7 +13,7 @@ interface PoseDao {
     // ── Insert / Update ─────────────────────────────────────────────
 
     /** Insert a list of poses, skip any that already exist (by name) */
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     suspend fun insertAllIgnore(poses: List<PoseEntity>)
 
     /** Insert or update a single pose by primary key */

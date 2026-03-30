@@ -1,6 +1,6 @@
 package com.sexadventure.domain.usecase
 
-import com.sexadventure.core.database.PoseOfTheDayEntity
+import com.sexadventure.core.database.entity.PoseOfTheDayEntity
 import com.sexadventure.core.repository.SinglePoseRepository
 import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseData

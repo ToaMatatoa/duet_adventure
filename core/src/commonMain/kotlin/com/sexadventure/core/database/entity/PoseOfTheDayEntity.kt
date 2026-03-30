@@ -1,4 +1,4 @@
-package com.sexadventure.core.database
+package com.sexadventure.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
