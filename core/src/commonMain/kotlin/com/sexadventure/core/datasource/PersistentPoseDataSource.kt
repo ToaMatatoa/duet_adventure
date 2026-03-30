@@ -1,8 +1,8 @@
 package com.sexadventure.core.datasource
 
 import com.sexadventure.core.database.dao.PoseDao
-import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.core.database.dao.PoseOfTheDayDao
+import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.core.database.entity.PoseOfTheDayEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -26,6 +26,8 @@ interface PersistentPoseDataSource {
     suspend fun getPredefinedAmount(): Int
 
     suspend fun getUserPosesAmount(): Int
+
+    fun searchPosesByName(query: String): Flow<List<PoseEntity>>
 }
 
 class PersistentPoseDataSourceImpl(
@@ -40,8 +42,7 @@ class PersistentPoseDataSourceImpl(
 
     override suspend fun getRandomPose(): PoseEntity? = poseDao.getRandomPose()
 
-    override suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity? =
-        poseOfTheDayDao.getNecessaryInfoAboutPoseOfTheDay()
+    override suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity? = poseOfTheDayDao.getNecessaryInfoAboutPoseOfTheDay()
 
     override suspend fun getPredefinedPoses(): List<PoseEntity> = poseDao.getPredefinedPoses()
 
@@ -52,4 +53,6 @@ class PersistentPoseDataSourceImpl(
     override suspend fun getPredefinedAmount(): Int = poseDao.getPredefinedAmount()
 
     override suspend fun getUserPosesAmount(): Int = poseDao.getUserPosesAmount()
+
+    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> = poseDao.searchPosesByName(query = query)
 }

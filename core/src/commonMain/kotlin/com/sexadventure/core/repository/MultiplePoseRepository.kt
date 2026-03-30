@@ -20,6 +20,9 @@ interface MultiplePoseRepository {
 
     /** Upload all predefined poses to db */
     suspend fun insertAllIgnore(poses: List<PoseEntity>)
+
+    /** Search poses by name */
+    fun searchPosesByName(query: String): Flow<List<PoseEntity>>
 }
 
 class MultiplePoseRepositoryImpl(
@@ -29,12 +32,13 @@ class MultiplePoseRepositoryImpl(
     /** Persistent methods */
     override fun getAllPoses(): Flow<List<PoseEntity>> = persistentPoseDataSource.getAllPoses()
 
-    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> =
-        persistentPoseDataSource.getPosesByCategory(category)
+    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> = persistentPoseDataSource.getPosesByCategory(category)
 
     override suspend fun getPredefinedPoses(): List<PoseEntity> = persistentPoseDataSource.getPredefinedPoses()
 
     override suspend fun getUserCreatedPoses(): List<PoseEntity> = persistentPoseDataSource.getUserCreatedPoses()
+
+    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> = persistentPoseDataSource.searchPosesByName(query = query)
 
     /** Mutable methods */
 

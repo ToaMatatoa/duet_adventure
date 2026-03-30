@@ -58,6 +58,10 @@ interface PoseDao {
     @Query("SELECT * FROM pose ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomPose(): PoseEntity?
 
+    /** Search specific poses by name */
+    @Query("SELECT * FROM pose WHERE name LIKE '%' || :query || '%' ORDER BY id")
+    fun searchPosesByName(query: String): Flow<List<PoseEntity>>
+
     // ── Safe partial updates for pose ──────────────────────────────────────
 
     /** Toggle favorite – allowed even on predefined poses */

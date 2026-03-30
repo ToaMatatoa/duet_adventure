@@ -6,6 +6,7 @@ import com.sexadventure.domain.usecase.GetPoseOfTheDayUseCase
 import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
 import com.sexadventure.domain.usecase.GetPosesCountUseCase
 import com.sexadventure.domain.usecase.GetRandomPoseUseCase
+import com.sexadventure.domain.usecase.SearchPosesByNameUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import com.sexadventure.domain.usecase.UpdatePersonalScoreUseCase
@@ -22,4 +23,5 @@ val useCaseModule = module {
     factoryOf(::SeedPosesUseCase)
     factoryOf(::ToggleFavouriteUseCase)
     factoryOf(::UpdatePersonalScoreUseCase)
+    factoryOf(::SearchPosesByNameUseCase)
 }
