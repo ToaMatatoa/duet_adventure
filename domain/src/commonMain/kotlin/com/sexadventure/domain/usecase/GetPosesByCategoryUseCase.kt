@@ -12,8 +12,22 @@ class GetPosesByCategoryUseCase(
 ) {
     operator fun invoke(category: PoseCategory): Flow<List<PoseData>> =
         if (category == PoseCategory.ALL) {
-            multiplePoseRepository.getAllPoses()
+            multiplePoseRepository.getAllPoses().map { poses ->
+                poses.sortedBy { pose ->
+                    pose.name
+                }
+            }
         } else {
-            multiplePoseRepository.getPosesByCategory(category.name.lowercase().replaceFirstChar { it.uppercase() })
-        }.map { poses -> poses.map { pose -> pose.toPoseData() } }
+            multiplePoseRepository.getPosesByCategory(
+                category.name.lowercase().replaceFirstChar {
+                    it.uppercase()
+                },
+            )
+        }.map { poses ->
+            poses.map { pose ->
+                pose.toPoseData()
+            }.sortedBy {
+                it.name
+            }
+        }
 }
