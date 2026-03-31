@@ -12,11 +12,14 @@ fun AllPosesRoot(
 ) {
     val viewModel = koinViewModel<AllPosesViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
+    val searchQuery = viewModel.searchQuery.collectAsStateWithLifecycle().value
 
     AllPosesScreen(
         state = state,
+        searchQuery = searchQuery,
         onPoseClick = onPoseClick,
         onFavouriteClick = viewModel::toggleFavourite,
+        onSearchQueryChange = viewModel::updateSearchPoseQuery,
         onCategorySelect = viewModel::selectCategory,
         modifier = modifier,
     )
