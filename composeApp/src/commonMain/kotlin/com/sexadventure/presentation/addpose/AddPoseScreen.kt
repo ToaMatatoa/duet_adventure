@@ -169,17 +169,16 @@ private fun PoseDifficultyContent(
 
         Text(
             text = if (difficulty > 0) {
-                "Your score: $difficulty/10"
+                "Difficulty: $difficulty/10"
             } else {
-                "Your score: –/10"
+                "Difficulty: –/10"
             },
             style = MaterialTheme.typography.titleSmall,
-            color =
-                if (difficulty > 0) {
-                    MaterialTheme.colorScheme.onBackground
-                } else {
-                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                },
+            color = if (difficulty > 0) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+            },
         )
     }
 
@@ -190,11 +189,18 @@ private fun PoseDifficultyContent(
         onValueChange = { onDifficultyChange(it.toInt()) },
         valueRange = 0f..10f,
         steps = 0,
-        colors =
-            SliderDefaults.colors(
-                thumbColor = FlameColor,
-                activeTrackColor = FlameColor,
-            ),
+        colors = SliderDefaults.colors(
+            thumbColor = if (difficulty > 0) {
+                FlameColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
+            activeTrackColor = if (difficulty > 0) {
+                FlameColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
+                    ),
         modifier = Modifier.fillMaxWidth(),
     )
 }
@@ -211,31 +217,28 @@ private fun UserPersonalScoreContent(
         Icon(
             imageVector = TablerIcons.Star,
             contentDescription = Strings.Common.POSE_PERSONAL_SCORE,
-            tint =
-                if (personalScore > 0) {
-                    GoldenColor
-                } else {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                },
+            tint = if (personalScore > 0) {
+                GoldenColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
             modifier = Modifier.size(20.dp),
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text =
-                if (personalScore > 0) {
-                    "Your score: $personalScore/10"
-                } else {
-                    "Your score: –/10"
-                },
+            text = if (personalScore > 0) {
+                "Your score: $personalScore/10"
+            } else {
+                "Your score: –/10"
+            },
             style = MaterialTheme.typography.titleSmall,
-            color =
-                if (personalScore > 0) {
-                    MaterialTheme.colorScheme.onBackground
-                } else {
-                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                },
+            color = if (personalScore > 0) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+            },
         )
     }
 
@@ -246,11 +249,18 @@ private fun UserPersonalScoreContent(
         onValueChange = { onPersonalScoreChange(it.toInt()) },
         valueRange = 0f..10f,
         steps = 0,
-        colors =
-            SliderDefaults.colors(
-                thumbColor = GoldenColor,
-                activeTrackColor = GoldenColor,
-            ),
+        colors = SliderDefaults.colors(
+            thumbColor = if (personalScore > 0) {
+                GoldenColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
+            activeTrackColor = if (personalScore > 0) {
+                GoldenColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
+        ),
         modifier = Modifier.fillMaxWidth(),
     )
 }
