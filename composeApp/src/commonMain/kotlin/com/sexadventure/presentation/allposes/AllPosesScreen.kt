@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -54,8 +56,14 @@ fun AllPosesScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
+    val listState = rememberLazyListState()
     var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
     var showSearchFilterMenu by remember { mutableStateOf(value = false) }
+
+    LifecycleResumeEffect(Unit) {
+        listState.requestScrollToItem(0)
+        onPauseOrDispose { }
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -148,6 +156,7 @@ fun AllPosesScreen(
 
             else -> {
                 LazyColumn(
+                    state = listState,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
@@ -163,7 +172,12 @@ fun AllPosesScreen(
                             personalScore = pose.personalScore,
                             category = pose.category,
                             isFavourite = pose.isFavorite,
-                            onClick = { onPoseClick(pose.id) },
+                            onClick = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                                onSearchQueryChange("")
+                                onPoseClick(pose.id)
+                            },
                             onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
                         )
                     }
