@@ -25,6 +25,7 @@ object Strings {
     object AllPoses {
         const val SCREEN_TITLE = "All Poses"
         const val EMPTY_STATE = "No poses yet"
+        const val ENTER_POSE_NAME = "Enter pose name"
     }
 
     /* ──────────────────────────────────────────────
@@ -56,7 +57,12 @@ object Strings {
     /* ──────────────────────────────────────────────
      *  Add / Edit Pose screen
      * ────────────────────────────────────────────── */
-    object AddEditPose
+    object AddEditPose {
+        const val SCREEN_TITLE_ADD = "Add Pose"
+        const val SCREEN_TITLE_EDIT = "Edit Pose"
+        const val POSE_NAME_LABEL = "Pose name"
+        const val POSE_DESCRIPTION_LABEL = "Pose description"
+    }
 
     /* ──────────────────────────────────────────────
      *  Common / shared

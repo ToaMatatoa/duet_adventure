@@ -53,7 +53,7 @@ fun AllPosesScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val searchFocusRequester = remember { FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
     var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
     var showSearchFilterMenu by remember { mutableStateOf(value = false) }
 
@@ -100,7 +100,7 @@ fun AllPosesScreen(
 
         AnimatedVisibility(visible = showSearchFilterMenu) {
             LaunchedEffect(Unit) {
-                searchFocusRequester.requestFocus()
+                focusRequester.requestFocus()
             }
 
             OutlinedTextField(
@@ -109,13 +109,13 @@ fun AllPosesScreen(
                 shape = RoundedCornerShape(size = 12.dp),
                 placeholder = {
                     Text(
-                        text = "Enter pose name",
+                        text = Strings.AllPoses.ENTER_POSE_NAME,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     )
                 },
                 modifier = Modifier
-                    .focusRequester(searchFocusRequester)
+                    .focusRequester(focusRequester)
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             )

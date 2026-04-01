@@ -1,21 +1,258 @@
 package com.sexadventure.presentation.addpose
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction.Companion.Done
+import androidx.compose.ui.text.input.ImeAction.Companion.Next
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.sexadventure.POSE_DESCRIPTION_MAX_LENGTH
+import com.sexadventure.POSE_NAME_MAX_LENGTH
+import com.sexadventure.designsystem.strings.Strings
+import com.sexadventure.designsystem.textfield.ProjectOutlinedTextField
+import com.sexadventure.designsystem.theme.FlameColor
+import com.sexadventure.designsystem.theme.GoldenColor
+import com.sexadventure.designsystem.topbar.TopBar
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Star
 
 @Composable
 fun AddPoseScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier) {
-        Text(
-            text = "Add Pose Screen",
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    val (name, onNameChange) = rememberSaveable { mutableStateOf(value = "") }
+    val (description, onDescriptionChange) = rememberSaveable { mutableStateOf(value = "") }
+    val (personalScore, onPersonalScoreChange) = rememberSaveable { mutableIntStateOf(value = 0) }
+    val (difficulty, onDifficultyChange) = rememberSaveable { mutableIntStateOf(value = 0) }
+    // ToDo imageUrl
+    // ToDo category
+    // ToDo difficulty
+    // ToDo personal score
+
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(horizontal = 16.dp)
+                .clickable(
+                    interactionSource = null,
+                    indication = null,
+                ) {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
+    ) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
+        TopBar(
+            title = Strings.AddEditPose.SCREEN_TITLE_ADD,
+            showBackButton = true,
+            onBackClick = onBackClick,
+        )
+
+        ProjectOutlinedTextField(
+            value = name,
+            onValueChange = onNameChange,
+            label = Strings.AddEditPose.POSE_NAME_LABEL,
+            valueMaxLength = POSE_NAME_MAX_LENGTH,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        ProjectOutlinedTextField(
+            value = description,
+            onValueChange = onDescriptionChange,
+            label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
+            valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
+            maxLines = 4,
+            keyboardOptions = KeyboardOptions(
+                imeAction = Done,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PoseDifficultyContent(
+            difficulty = difficulty,
+            onDifficultyChange = onDifficultyChange,
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        UserPersonalScoreContent(
+            personalScore = personalScore,
+            onPersonalScoreChange = onPersonalScoreChange,
         )
     }
+}
+
+@Composable
+private fun PoseDifficultyContent(
+    difficulty: Int,
+    onDifficultyChange: (Int) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Icon(
+            imageVector = TablerIcons.Star,
+            contentDescription = Strings.Common.POSE_DIFFICULTY,
+            tint = if (difficulty > 0) {
+                FlameColor
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            },
+            modifier = Modifier.size(20.dp),
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = if (difficulty > 0) {
+                "Your score: $difficulty/10"
+            } else {
+                "Your score: –/10"
+            },
+            style = MaterialTheme.typography.titleSmall,
+            color =
+                if (difficulty > 0) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+        )
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Slider(
+        value = difficulty.toFloat(),
+        onValueChange = { onDifficultyChange(it.toInt()) },
+        valueRange = 0f..10f,
+        steps = 0,
+        colors =
+            SliderDefaults.colors(
+                thumbColor = FlameColor,
+                activeTrackColor = FlameColor,
+            ),
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun UserPersonalScoreContent(
+    personalScore: Int,
+    onPersonalScoreChange: (Int) -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Icon(
+            imageVector = TablerIcons.Star,
+            contentDescription = Strings.Common.POSE_PERSONAL_SCORE,
+            tint =
+                if (personalScore > 0) {
+                    GoldenColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+            modifier = Modifier.size(20.dp),
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text =
+                if (personalScore > 0) {
+                    "Your score: $personalScore/10"
+                } else {
+                    "Your score: –/10"
+                },
+            style = MaterialTheme.typography.titleSmall,
+            color =
+                if (personalScore > 0) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+        )
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Slider(
+        value = personalScore.toFloat(),
+        onValueChange = { onPersonalScoreChange(it.toInt()) },
+        valueRange = 0f..10f,
+        steps = 0,
+        colors =
+            SliderDefaults.colors(
+                thumbColor = GoldenColor,
+                activeTrackColor = GoldenColor,
+            ),
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Preview
