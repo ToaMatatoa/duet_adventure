@@ -26,64 +26,64 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            SexAdventureNavigationBar(
-                selectedKey = navigationState.topLevelRoute,
-                onSelectKey = {
-                    navigator.navigate(route = it)
-                },
-            )
+            if (navigationState.topLevelRoute in TOP_LEVEL_DESTINATIONS && navigationState.isAtTopLevel) {
+                SexAdventureNavigationBar(
+                    selectedKey = navigationState.topLevelRoute,
+                    onSelectKey = {
+                        navigator.navigate(route = it)
+                    },
+                )
+            }
         },
     ) { innerPadding ->
         NavDisplay(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = innerPadding),
             onBack = navigator::goBack,
-            entries =
-                navigationState.toEntries(
-                    entryProvider {
-                        entry<Route.AllPoses> {
-                            AllPosesRoot(
-                                onPoseClick = { poseId ->
-                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
-                                },
-                                onOpenAddPoseScreen = {
-                                    navigator.navigate(route = Route.AddPose)
-                                },
-                            )
-                        }
+            entries = navigationState.toEntries(
+                entryProvider {
+                    entry<Route.AllPoses> {
+                        AllPosesRoot(
+                            onPoseClick = { poseId ->
+                                navigator.navigate(route = Route.PoseDetails(id = poseId))
+                            },
+                            onOpenAddPoseScreen = {
+                                navigator.navigate(route = Route.AddPose)
+                            },
+                        )
+                    }
 
-                        entry<Route.AddPose> {
-                            AddPoseRoot(
-                                onBackClick = navigator::goBack,
-                            )
-                        }
+                    entry<Route.AddPose> {
+                        AddPoseRoot(
+                            onBackClick = navigator::goBack,
+                        )
+                    }
 
-                        entry<Route.FavouritePoses> {
-                            FavouritePosesRoot(
-                                onPoseClick = { poseId ->
-                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
-                                },
-                            )
-                        }
+                    entry<Route.FavouritePoses> {
+                        FavouritePosesRoot(
+                            onPoseClick = { poseId ->
+                                navigator.navigate(route = Route.PoseDetails(id = poseId))
+                            },
+                        )
+                    }
 
-                        entry<Route.PoseDetails> { route ->
-                            DetailPoseRoot(
-                                poseId = route.id,
-                                onBackClick = navigator::goBack,
-                            )
-                        }
+                    entry<Route.PoseDetails> { route ->
+                        DetailPoseRoot(
+                            poseId = route.id,
+                            onBackClick = navigator::goBack,
+                        )
+                    }
 
-                        entry<Route.Profile> {
-                            ProfileRoot(
-                                onOpenPoseDetails = { poseId ->
-                                    navigator.navigate(route = Route.PoseDetails(id = poseId))
-                                },
-                            )
-                        }
-                    },
-                ),
+                    entry<Route.Profile> {
+                        ProfileRoot(
+                            onOpenPoseDetails = { poseId ->
+                                navigator.navigate(route = Route.PoseDetails(id = poseId))
+                            },
+                        )
+                    }
+                },
+            ),
         )
     }
 }

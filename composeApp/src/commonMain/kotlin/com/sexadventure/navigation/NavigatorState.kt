@@ -29,12 +29,16 @@ class NavigationState(
 ) {
     var topLevelRoute by topLevelRoute
 
+    /** True when the active tab's back stack has no sub-screens pushed on top */
+    val isAtTopLevel: Boolean
+        get() = (backStacks[topLevelRoute]?.size ?: 0) <= 1
+
     val stacksInUse: List<NavKey>
         get() = if (topLevelRoute == startRoute) {
-                listOf(startRoute)
-            } else {
-                listOf(startRoute, topLevelRoute)
-            }
+            listOf(startRoute)
+        } else {
+            listOf(startRoute, topLevelRoute)
+        }
 }
 
 @Composable
@@ -54,8 +58,7 @@ fun rememberNavigationState(
             mutableStateOf(startRoute)
         }
 
-    val backStacks =
-        topLevelRoutes.associateWith { key ->
+    val backStacks = topLevelRoutes.associateWith { key ->
             rememberNavBackStack(
                 configuration = serializersConfig,
                 key,
