@@ -48,7 +48,7 @@ fun rememberNavigationState(
             topLevelRoutes,
             configuration = serializersConfig,
             serializer = MutableStateSerializer(
-                PolymorphicSerializer(NavKey::class)
+                PolymorphicSerializer(NavKey::class),
             ),
         ) {
             mutableStateOf(startRoute)
@@ -72,25 +72,25 @@ fun rememberNavigationState(
 }
 
 val serializersConfig = SavedStateConfiguration {
-        serializersModule = SerializersModule {
-                polymorphic(NavKey::class) {
-                    subclass(Route.AllPoses::class, Route.AllPoses.serializer())
-                    subclass(Route.FavouritePoses::class, Route.FavouritePoses.serializer())
-                    subclass(Route.PoseDetails::class, Route.PoseDetails.serializer())
-                    subclass(Route.Profile::class, Route.Profile.serializer())
-                }
-            }
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(Route.AllPoses::class, Route.AllPoses.serializer())
+            subclass(Route.AddPose::class, Route.AddPose.serializer())
+            subclass(Route.FavouritePoses::class, Route.FavouritePoses.serializer())
+            subclass(Route.PoseDetails::class, Route.PoseDetails.serializer())
+            subclass(Route.Profile::class, Route.Profile.serializer())
+        }
     }
+}
 
 @Composable
 fun NavigationState.toEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): SnapshotStateList<NavEntry<NavKey>> {
     val decoratedEntries =
         backStacks.mapValues { (_, stack) ->
-            val decorators =
-                listOf(
-                    rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
-                    rememberViewModelStoreNavEntryDecorator(),
-                )
+            val decorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+                rememberViewModelStoreNavEntryDecorator(),
+            )
             rememberDecoratedNavEntries(
                 backStack = stack,
                 entryDecorators = decorators,

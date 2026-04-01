@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.sexadventure.presentation.addpose.AddPoseRoot
 import com.sexadventure.presentation.allposes.AllPosesRoot
 import com.sexadventure.presentation.detailpose.DetailPoseRoot
 import com.sexadventure.presentation.favouriteposes.FavouritePosesRoot
@@ -16,11 +17,10 @@ import com.sexadventure.presentation.profile.ProfileRoot
 
 @Composable
 fun NavigationRoot(modifier: Modifier = Modifier) {
-    val navigationState =
-        rememberNavigationState(
-            startRoute = Route.AllPoses,
-            topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys.toSet<NavKey>(),
-        )
+    val navigationState = rememberNavigationState(
+        startRoute = Route.AllPoses,
+        topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys.toSet<NavKey>(),
+    )
     val navigator = remember { Navigator(navigationState) }
 
     Scaffold(
@@ -48,6 +48,15 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                                 onPoseClick = { poseId ->
                                     navigator.navigate(route = Route.PoseDetails(id = poseId))
                                 },
+                                onOpenAddPoseScreen = {
+                                    navigator.navigate(route = Route.AddPose)
+                                },
+                            )
+                        }
+
+                        entry<Route.AddPose> {
+                            AddPoseRoot(
+                                onBackClick = navigator::goBack,
                             )
                         }
 
