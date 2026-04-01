@@ -8,6 +8,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AllPosesRoot(
     onPoseClick: (Int) -> Unit,
+    onOpenAddPoseScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel = koinViewModel<AllPosesViewModel>()
@@ -18,6 +19,7 @@ fun AllPosesRoot(
         state = state,
         searchQuery = searchQuery,
         onPoseClick = onPoseClick,
+        onOpenAddPoseScreen = onOpenAddPoseScreen,
         onFavouriteClick = viewModel::toggleFavourite,
         onSearchQueryChange = viewModel::updateSearchPoseQuery,
         onCategorySelect = viewModel::selectCategory,
