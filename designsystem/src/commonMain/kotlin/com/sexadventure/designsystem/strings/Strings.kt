@@ -8,7 +8,6 @@ package com.sexadventure.designsystem.strings
  * Usage:  Text(text = Strings.AllPoses.screenTitle)
  */
 object Strings {
-
     /* ──────────────────────────────────────────────
      *  Bottom navigation
      * ────────────────────────────────────────────── */
@@ -73,6 +72,8 @@ object Strings {
 
         const val POSE_IMAGE = "Pose image"
         const val POSE_NO_IMAGE = "No image available"
+
+        const val ADD_NEW_POSE = "Add new pose"
 
         const val POSE_DIFFICULTY = "Pose difficulty"
         const val POSE_PERSONAL_SCORE = "User personal score"
