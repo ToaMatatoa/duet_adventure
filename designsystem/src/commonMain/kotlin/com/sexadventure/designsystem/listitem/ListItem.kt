@@ -76,8 +76,8 @@ fun ListItem(
             modifier = Modifier.padding(all = 12.dp),
         ) {
             val imageModifier = Modifier
-                    .size(72.dp)
-                    .clip(shape = RoundedCornerShape(size = 12.dp))
+                .size(72.dp)
+                .clip(shape = RoundedCornerShape(size = 12.dp))
 
             if (image != null) {
                 Image(
@@ -90,9 +90,9 @@ fun ListItem(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = imageModifier.background(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(size = 12.dp),
-                        ),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(size = 12.dp),
+                    ),
                 ) {
                     Icon(
                         imageVector = TablerIcons.Photo,

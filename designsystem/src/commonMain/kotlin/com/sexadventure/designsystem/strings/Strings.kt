@@ -60,6 +60,10 @@ object Strings {
     object AddEditPose {
         const val SCREEN_TITLE_ADD = "Add Pose"
         const val SCREEN_TITLE_EDIT = "Edit Pose"
+        const val POSE_IMAGE = "Pose image"
+        const val REMOVE_POSE_IMAGE = "Remove pose image"
+        const val CHOOSE_PHOTO_FROM_GALLERY = "Choose photo from gallery"
+        const val ONLY_ALLOW_PNG = "Only allows PNG images"
         const val POSE_NAME_LABEL = "Pose name"
         const val POSE_DESCRIPTION_LABEL = "Pose description"
     }

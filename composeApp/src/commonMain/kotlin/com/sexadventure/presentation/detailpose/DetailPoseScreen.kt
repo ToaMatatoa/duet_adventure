@@ -55,8 +55,8 @@ fun DetailPoseScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background),
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         TopBar(
             title = Strings.PoseDetail.SCREEN_TITLE,
@@ -110,15 +110,15 @@ private fun PoseDetailContent(
 ) {
     Column(
         modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(state = rememberScrollState())
-                .padding(horizontal = 16.dp),
+            .fillMaxSize()
+            .verticalScroll(state = rememberScrollState())
+            .padding(horizontal = 16.dp),
     ) {
         val imageResource = resolveImage(imageName = pose.imageUrl)
         val imageModifier = Modifier
-                .fillMaxWidth()
-                .height(280.dp)
-                .clip(shape = RoundedCornerShape(size = 16.dp))
+            .fillMaxWidth()
+            .height(280.dp)
+            .clip(shape = RoundedCornerShape(size = 16.dp))
 
         if (imageResource != null) {
             Image(
@@ -131,9 +131,9 @@ private fun PoseDetailContent(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = imageModifier.background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(size = 16.dp),
-                    ),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(size = 16.dp),
+                ),
             ) {
                 Icon(
                     imageVector = TablerIcons.Photo,
@@ -162,10 +162,10 @@ private fun PoseDetailContent(
                     imageVector = TablerIcons.Heart,
                     contentDescription = Strings.Common.FAVOURITE_POSE,
                     tint = if (pose.isFavorite) {
-                            FlameColor
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
+                        FlameColor
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
                     modifier = Modifier.size(28.dp),
                 )
             }
@@ -187,8 +187,8 @@ private fun PoseDetailContent(
             text = pose.description.ifBlank { Strings.Common.NO_POSE_DESCRIPTION },
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground.copy(
-                    alpha = if (pose.description.isNotBlank()) 0.7f else 0.4f,
-                ),
+                alpha = if (pose.description.isNotBlank()) 0.7f else 0.4f,
+            ),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -198,10 +198,10 @@ private fun PoseDetailContent(
                 imageVector = TablerIcons.Flame,
                 contentDescription = Strings.Common.POSE_DIFFICULTY,
                 tint = if (pose.difficulty > 0) {
-                        FlameColor
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    },
+                    FlameColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
                 modifier = Modifier.size(20.dp),
             )
 
@@ -209,17 +209,17 @@ private fun PoseDetailContent(
 
             Text(
                 text = if (pose.difficulty > 0) {
-                        "Difficulty: ${pose.difficulty}/10"
-                    } else {
-                        "Difficulty: –/10"
-                    },
+                    "Difficulty: ${pose.difficulty}/10"
+                } else {
+                    "Difficulty: –/10"
+                },
                 style = MaterialTheme.typography.titleSmall,
                 color = if (pose.difficulty > 0) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                           },
-                )
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -246,11 +246,11 @@ private fun PoseDetailContent(
                 },
                 style = MaterialTheme.typography.titleSmall,
                 color = if (pose.personalScore > 0) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                    },
-                )
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -261,9 +261,9 @@ private fun PoseDetailContent(
             valueRange = 0f..10f,
             steps = 0,
             colors = SliderDefaults.colors(
-                    thumbColor = GoldenColor,
-                    activeTrackColor = GoldenColor,
-                ),
+                thumbColor = GoldenColor,
+                activeTrackColor = GoldenColor,
+            ),
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -274,17 +274,17 @@ private fun PoseDetailContent(
 private fun DetailPoseScreenPreview() {
     DetailPoseScreen(
         state = DetailPoseState(
-                pose = PoseData(
-                        id = 1,
-                        name = "Missionary",
-                        description = "A classic face-to-face position. One partner lies on their back while the other is on top.",
-                        imageUrl = "missionary",
-                        category = "Classic",
-                        difficulty = 5,
-                        personalScore = 5,
-                        isFavorite = true,
-                    ),
+            pose = PoseData(
+                id = 1,
+                name = "Missionary",
+                description = "A classic face-to-face position. One partner lies on their back while the other is on top.",
+                imageUrl = "missionary",
+                category = "Classic",
+                difficulty = 5,
+                personalScore = 5,
+                isFavorite = true,
             ),
+        ),
         onBackClick = {},
         onToggleFavourite = {},
         onScoreChange = {},

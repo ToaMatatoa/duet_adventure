@@ -1,8 +1,10 @@
 package com.sexadventure.presentation.addpose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,19 +16,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -45,6 +52,11 @@ import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
+import compose.icons.tablericons.X
+import io.github.ismoy.imagepickerkmp.domain.extensions.loadPainter
+import io.github.ismoy.imagepickerkmp.domain.models.GalleryPhotoResult
+import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
+import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLauncher
 
 @Composable
 fun AddPoseScreen(
@@ -58,10 +70,10 @@ fun AddPoseScreen(
     val (description, onDescriptionChange) = rememberSaveable { mutableStateOf(value = "") }
     val (personalScore, onPersonalScoreChange) = rememberSaveable { mutableIntStateOf(value = 0) }
     val (difficulty, onDifficultyChange) = rememberSaveable { mutableIntStateOf(value = 0) }
-    // ToDo imageUrl
+
+    var showGallery by remember { mutableStateOf(value = false) }
+    var selectedImage by remember { mutableStateOf<PhotoResult?>(value = null) }
     // ToDo category
-    // ToDo difficulty
-    // ToDo personal score
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -88,6 +100,15 @@ fun AddPoseScreen(
             showBackButton = true,
             onBackClick = onBackClick,
         )
+
+        PosePhoto(
+            selectedImage = selectedImage,
+            showGallery = showGallery,
+            onSelectImage = { selectedImage = it.firstOrNull() },
+            onShowGalleryChange = { showGallery = it },
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         ProjectOutlinedTextField(
             value = name,
@@ -141,6 +162,90 @@ fun AddPoseScreen(
         UserPersonalScoreContent(
             personalScore = personalScore,
             onPersonalScoreChange = onPersonalScoreChange,
+        )
+    }
+}
+
+@Composable
+private fun PosePhoto(
+    selectedImage: PhotoResult?,
+    showGallery: Boolean,
+    onSelectImage: (List<GalleryPhotoResult>) -> Unit,
+    onShowGalleryChange: (Boolean) -> Unit,
+) {
+    if (selectedImage != null) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = 280.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                    shape = MaterialTheme.shapes.medium,
+                ),
+        ) {
+            Image(
+                painter = selectedImage.loadPainter()!!,
+                contentDescription = Strings.AddEditPose.POSE_IMAGE,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(size = 64.dp)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+                    .clip(shape = MaterialTheme.shapes.medium)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                    )
+                    .clickable { onSelectImage(emptyList()) },
+            ) {
+                Icon(
+                    imageVector = TablerIcons.X,
+                    contentDescription = Strings.AddEditPose.REMOVE_POSE_IMAGE,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(size = 32.dp),
+                )
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (showGallery) {
+            GalleryPickerLauncher(
+                onPhotosSelected = { photo ->
+                    onSelectImage(photo)
+                    onShowGalleryChange(false)
+                },
+                onError = { onShowGalleryChange(false) },
+                onDismiss = { onShowGalleryChange(false) },
+                allowMultiple = false,
+                mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    TextButton(
+        onClick = { onShowGalleryChange(true) },
+        shape = MaterialTheme.shapes.medium,
+        colors =
+            ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(height = 56.dp),
+    ) {
+        Text(
+            text = Strings.AddEditPose.CHOOSE_PHOTO_FROM_GALLERY,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -200,7 +305,7 @@ private fun PoseDifficultyContent(
             } else {
                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
             },
-                    ),
+        ),
         modifier = Modifier.fillMaxWidth(),
     )
 }
