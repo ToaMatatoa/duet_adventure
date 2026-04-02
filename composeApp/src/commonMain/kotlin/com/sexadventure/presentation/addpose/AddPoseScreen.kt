@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -76,20 +78,17 @@ fun AddPoseScreen(
     // ToDo category
 
     Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
-                .clickable(
-                    interactionSource = null,
-                    indication = null,
-                ) {
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
-                },
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
+            .clickable(
+                interactionSource = null,
+                indication = null,
+            ) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            },
     ) {
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
@@ -101,7 +100,14 @@ fun AddPoseScreen(
             onBackClick = onBackClick,
         )
 
-        PosePhoto(
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            PosePhoto(
             selectedImage = selectedImage,
             showGallery = showGallery,
             onSelectImage = { selectedImage = it.firstOrNull() },
@@ -163,6 +169,7 @@ fun AddPoseScreen(
             personalScore = personalScore,
             onPersonalScoreChange = onPersonalScoreChange,
         )
+        }
     }
 }
 
@@ -172,81 +179,84 @@ private fun PosePhoto(
     showGallery: Boolean,
     onSelectImage: (List<GalleryPhotoResult>) -> Unit,
     onShowGalleryChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    if (selectedImage != null) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height = 280.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                    shape = MaterialTheme.shapes.medium,
-                ),
-        ) {
-            Image(
-                painter = selectedImage.loadPainter()!!,
-                contentDescription = Strings.AddEditPose.POSE_IMAGE,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-
+    Column(modifier = modifier) {
+        if (selectedImage != null) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(size = 64.dp)
-                    .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 8.dp)
-                    .clip(shape = MaterialTheme.shapes.medium)
+                    .fillMaxWidth()
+                    .height(height = 280.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                    )
-                    .clickable { onSelectImage(emptyList()) },
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                        shape = MaterialTheme.shapes.medium,
+                    ),
             ) {
-                Icon(
-                    imageVector = TablerIcons.X,
-                    contentDescription = Strings.AddEditPose.REMOVE_POSE_IMAGE,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(size = 32.dp),
+                Image(
+                    painter = selectedImage.loadPainter()!!,
+                    contentDescription = Strings.AddEditPose.POSE_IMAGE,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(size = 64.dp)
+                        .align(Alignment.TopEnd)
+                        .padding(top = 8.dp, end = 8.dp)
+                        .clip(shape = MaterialTheme.shapes.medium)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
+                        )
+                        .clickable { onSelectImage(emptyList()) },
+                ) {
+                    Icon(
+                        imageVector = TablerIcons.X,
+                        contentDescription = Strings.AddEditPose.REMOVE_POSE_IMAGE,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(size = 32.dp),
+                    )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if (showGallery) {
+                GalleryPickerLauncher(
+                    onPhotosSelected = { photo ->
+                        onSelectImage(photo)
+                        onShowGalleryChange(false)
+                    },
+                    onError = { onShowGalleryChange(false) },
+                    onDismiss = { onShowGalleryChange(false) },
+                    allowMultiple = false,
+                    mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG
                 )
             }
         }
-    }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        if (showGallery) {
-            GalleryPickerLauncher(
-                onPhotosSelected = { photo ->
-                    onSelectImage(photo)
-                    onShowGalleryChange(false)
-                },
-                onError = { onShowGalleryChange(false) },
-                onDismiss = { onShowGalleryChange(false) },
-                allowMultiple = false,
-                mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = { onShowGalleryChange(true) },
+            shape = MaterialTheme.shapes.medium,
+            colors =
+                ButtonDefaults.textButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(height = 56.dp),
+        ) {
+            Text(
+                text = Strings.AddEditPose.CHOOSE_PHOTO_FROM_GALLERY,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
-    }
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    TextButton(
-        onClick = { onShowGalleryChange(true) },
-        shape = MaterialTheme.shapes.medium,
-        colors =
-            ButtonDefaults.textButtonColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(height = 56.dp),
-    ) {
-        Text(
-            text = Strings.AddEditPose.CHOOSE_PHOTO_FROM_GALLERY,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge,
-        )
     }
 }
 
@@ -254,120 +264,126 @@ private fun PosePhoto(
 private fun PoseDifficultyContent(
     difficulty: Int,
     onDifficultyChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Icon(
-            imageVector = TablerIcons.Star,
-            contentDescription = Strings.Common.POSE_DIFFICULTY,
-            tint = if (difficulty > 0) {
-                FlameColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-            modifier = Modifier.size(20.dp),
-        )
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                imageVector = TablerIcons.Star,
+                contentDescription = Strings.Common.POSE_DIFFICULTY,
+                tint = if (difficulty > 0) {
+                    FlameColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+                modifier = Modifier.size(20.dp),
+            )
 
-        Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = if (difficulty > 0) {
-                "Difficulty: $difficulty/10"
-            } else {
-                "Difficulty: –/10"
-            },
-            style = MaterialTheme.typography.titleSmall,
-            color = if (difficulty > 0) {
-                MaterialTheme.colorScheme.onBackground
-            } else {
-                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-            },
+            Text(
+                text = if (difficulty > 0) {
+                    "Difficulty: $difficulty/10"
+                } else {
+                    "Difficulty: –/10"
+                },
+                style = MaterialTheme.typography.titleSmall,
+                color = if (difficulty > 0) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Slider(
+            value = difficulty.toFloat(),
+            onValueChange = { onDifficultyChange(it.toInt()) },
+            valueRange = 0f..10f,
+            steps = 0,
+            colors = SliderDefaults.colors(
+                thumbColor = if (difficulty > 0) {
+                    FlameColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+                activeTrackColor = if (difficulty > 0) {
+                    FlameColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+            ),
+            modifier = Modifier.fillMaxWidth(),
         )
     }
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Slider(
-        value = difficulty.toFloat(),
-        onValueChange = { onDifficultyChange(it.toInt()) },
-        valueRange = 0f..10f,
-        steps = 0,
-        colors = SliderDefaults.colors(
-            thumbColor = if (difficulty > 0) {
-                FlameColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-            activeTrackColor = if (difficulty > 0) {
-                FlameColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-        ),
-        modifier = Modifier.fillMaxWidth(),
-    )
 }
 
 @Composable
 private fun UserPersonalScoreContent(
     personalScore: Int,
     onPersonalScoreChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Icon(
-            imageVector = TablerIcons.Star,
-            contentDescription = Strings.Common.POSE_PERSONAL_SCORE,
-            tint = if (personalScore > 0) {
-                GoldenColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-            modifier = Modifier.size(20.dp),
-        )
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(
+                imageVector = TablerIcons.Star,
+                contentDescription = Strings.Common.POSE_PERSONAL_SCORE,
+                tint = if (personalScore > 0) {
+                    GoldenColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+                modifier = Modifier.size(20.dp),
+            )
 
-        Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = if (personalScore > 0) {
-                "Your score: $personalScore/10"
-            } else {
-                "Your score: –/10"
-            },
-            style = MaterialTheme.typography.titleSmall,
-            color = if (personalScore > 0) {
-                MaterialTheme.colorScheme.onBackground
-            } else {
-                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-            },
+            Text(
+                text = if (personalScore > 0) {
+                    "Your score: $personalScore/10"
+                } else {
+                    "Your score: –/10"
+                },
+                style = MaterialTheme.typography.titleSmall,
+                color = if (personalScore > 0) {
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Slider(
+            value = personalScore.toFloat(),
+            onValueChange = { onPersonalScoreChange(it.toInt()) },
+            valueRange = 0f..10f,
+            steps = 0,
+            colors = SliderDefaults.colors(
+                thumbColor = if (personalScore > 0) {
+                    GoldenColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+                activeTrackColor = if (personalScore > 0) {
+                    GoldenColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
+            ),
+            modifier = Modifier.fillMaxWidth(),
         )
     }
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Slider(
-        value = personalScore.toFloat(),
-        onValueChange = { onPersonalScoreChange(it.toInt()) },
-        valueRange = 0f..10f,
-        steps = 0,
-        colors = SliderDefaults.colors(
-            thumbColor = if (personalScore > 0) {
-                GoldenColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-            activeTrackColor = if (personalScore > 0) {
-                GoldenColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-            },
-        ),
-        modifier = Modifier.fillMaxWidth(),
-    )
 }
 
 @Preview
