@@ -61,6 +61,9 @@ kotlin {
 
             // icons extended
             implementation(libs.icons)
+
+            // photo picker
+            implementation(libs.photo.picker)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
