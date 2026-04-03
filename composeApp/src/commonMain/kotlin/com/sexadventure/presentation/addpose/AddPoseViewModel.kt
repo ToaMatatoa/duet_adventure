@@ -24,6 +24,9 @@ class AddPoseViewModel(
     private val _state: MutableStateFlow<AddPoseState> = MutableStateFlow(value = AddPoseState())
     val state: StateFlow<AddPoseState> = _state.asStateFlow()
 
+    private val _effects: MutableStateFlow<AddPoseEffects?> = MutableStateFlow(value = null)
+    val effects: StateFlow<AddPoseEffects?> = _effects.asStateFlow()
+
     /** Stores raw image bytes from the gallery picker for later persistence */
     private var pendingImageBytes: ByteArray? = null
 
@@ -108,7 +111,10 @@ class AddPoseViewModel(
                 userComments = _state.value.userComment,
                 isUserCreated = true,
             )
-            savePoseUseCase(pose)
+            savePoseUseCase(poseData = pose)
+
+            _effects.value = AddPoseEffects.ShowMessage
+            _effects.value = AddPoseEffects.BackToHome
         }
     }
 }

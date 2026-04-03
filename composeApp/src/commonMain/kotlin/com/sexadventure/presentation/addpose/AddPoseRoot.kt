@@ -1,8 +1,17 @@
 package com.sexadventure.presentation.addpose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.compose.NavigationBackHandler
+import com.catrak.snackbar.SnackbarController
+import com.catrak.snackbar.SnackbarEvent
+import com.sexadventure.designsystem.strings.Strings
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -12,6 +21,27 @@ fun AddPoseRoot(
 ) {
     val viewModel = koinViewModel<AddPoseViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
+    val effects = viewModel.effects.collectAsStateWithLifecycle().value
+    val scope = rememberCoroutineScope()
+    val backClick by rememberUpdatedState(newValue = onBackClick)
+
+    LaunchedEffect(effects) {
+        when (effects) {
+            is AddPoseEffects.BackToHome -> backClick()
+
+            is AddPoseEffects.ShowMessage -> {
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        event = SnackbarEvent(
+                            message = Strings.AddEditPose.POSE_SAVED,
+                        ),
+                    )
+                }
+            }
+
+            null -> Unit
+        }
+    }
 
     AddPoseScreen(
         state = state,
