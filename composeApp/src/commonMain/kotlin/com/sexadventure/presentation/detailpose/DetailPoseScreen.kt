@@ -1,5 +1,6 @@
 package com.sexadventure.presentation.detailpose
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -50,6 +53,7 @@ fun DetailPoseScreen(
     onBackClick: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
+    onDifficultyChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -96,6 +100,7 @@ fun DetailPoseScreen(
                     pose = state.pose,
                     onToggleFavourite = onToggleFavourite,
                     onScoreChange = onScoreChange,
+                    onDifficultyChange = onDifficultyChange,
                 )
             }
         }
@@ -107,6 +112,7 @@ private fun PoseDetailContent(
     pose: PoseData,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
+    onDifficultyChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -224,6 +230,30 @@ private fun PoseDetailContent(
             )
         }
 
+        if (pose.isUserCreated) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Slider(
+                value = pose.difficulty.toFloat(),
+                onValueChange = { onDifficultyChange(it.toInt()) },
+                valueRange = 0f..10f,
+                steps = 0,
+                colors = SliderDefaults.colors(
+                    thumbColor = if (pose.difficulty > 0) {
+                        FlameColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    },
+                    activeTrackColor = if (pose.difficulty > 0) {
+                        FlameColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    },
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -268,6 +298,29 @@ private fun PoseDetailContent(
             ),
             modifier = Modifier.fillMaxWidth(),
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        AnimatedVisibility(visible = pose.userComments.isNotBlank()) {
+            OutlinedTextField(
+                value = pose.userComments,
+                colors = MaterialTheme.colorScheme.run {
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = onBackground.copy(alpha = 0.7f),
+                        unfocusedBorderColor = onBackground.copy(alpha = 0.7f),
+                        disabledBorderColor = onBackground.copy(alpha = 0.7f),
+                        focusedLabelColor = onBackground.copy(alpha = 0.7f),
+                        unfocusedLabelColor = onBackground.copy(alpha = 0.7f),
+                        disabledLabelColor = onBackground.copy(alpha = 0.7f),
+                        cursorColor = onBackground.copy(alpha = 0.7f),
+                    )
+                },
+                onValueChange = { /* No-op, read-only */ },
+                label = { Text(Strings.PoseDetail.USER_COMMENTS_LABEL) },
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 
@@ -290,6 +343,7 @@ private fun DetailPoseScreenPreview() {
         onBackClick = {},
         onToggleFavourite = {},
         onScoreChange = {},
+        onDifficultyChange = {},
     )
 }
 
@@ -301,5 +355,6 @@ private fun DetailPoseScreenLoadingPreview() {
         onBackClick = {},
         onToggleFavourite = {},
         onScoreChange = {},
+        onDifficultyChange = {},
     )
 }

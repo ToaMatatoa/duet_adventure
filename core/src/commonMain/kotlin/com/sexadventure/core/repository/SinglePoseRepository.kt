@@ -27,6 +27,12 @@ interface SinglePoseRepository {
         score: Int,
     )
 
+    /** Change difficulty of a user-created pose in db */
+    suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    )
+
     /** Update user comments for the pose in db */
     suspend fun updateUserComments(
         id: Int,
@@ -70,6 +76,11 @@ class SinglePoseRepositoryImpl(
         id: Int,
         score: Int,
     ) = mutablePoseDataSource.updatePersonalScore(id, score)
+
+    override suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    ) = mutablePoseDataSource.updateDifficulty(id, difficulty)
 
     override suspend fun updateUserComments(
         id: Int,

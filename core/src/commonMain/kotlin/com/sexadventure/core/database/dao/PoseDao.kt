@@ -85,6 +85,13 @@ interface PoseDao {
         userComments: String,
     )
 
+    /** Update difficulty – only meaningful for user-created poses */
+    @Query("UPDATE pose SET difficulty = :difficulty WHERE id = :id")
+    suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    )
+
     /** Update best places to use */
     @Query("UPDATE pose SET bestPlacesToUse = :bestPlacesToUse WHERE id = :id")
     suspend fun updateBestPlacesToUse(

@@ -27,6 +27,11 @@ interface MutablePoseDataSource {
         userComments: String,
     )
 
+    suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    )
+
     suspend fun updateBestPlacesToUse(
         id: Int,
         bestPlacesToUse: String,
@@ -60,6 +65,11 @@ class MutablePoseDataSourceImpl(
         id: Int,
         userComments: String,
     ) = poseDao.updateUserComments(id, userComments)
+
+    override suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    ) = poseDao.updateDifficulty(id, difficulty)
 
     override suspend fun updateBestPlacesToUse(
         id: Int,

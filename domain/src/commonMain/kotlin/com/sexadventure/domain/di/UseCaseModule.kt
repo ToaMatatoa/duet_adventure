@@ -11,6 +11,7 @@ import com.sexadventure.domain.usecase.SearchPosesByNameUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import com.sexadventure.domain.usecase.UpdateBestPlacesToUseUseCase
+import com.sexadventure.domain.usecase.UpdateDifficultyUseCase
 import com.sexadventure.domain.usecase.UpdatePersonalScoreUseCase
 import com.sexadventure.domain.usecase.UpdateUserCommentsUseCase
 import org.koin.core.module.dsl.factoryOf
@@ -26,6 +27,7 @@ val useCaseModule = module {
     factoryOf(::SeedPosesUseCase)
     factoryOf(::ToggleFavouriteUseCase)
     factoryOf(::UpdatePersonalScoreUseCase)
+    factoryOf(::UpdateDifficultyUseCase)
     factoryOf(::SavePoseUseCase)
     factoryOf(::UpdateUserCommentsUseCase)
     factoryOf(::UpdateBestPlacesToUseUseCase)

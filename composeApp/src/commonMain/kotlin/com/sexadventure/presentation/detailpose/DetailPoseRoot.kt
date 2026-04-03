@@ -22,6 +22,7 @@ fun DetailPoseRoot(
         onBackClick = onBackClick,
         onToggleFavourite = viewModel::toggleFavourite,
         onScoreChange = viewModel::updateScore,
+        onDifficultyChange = viewModel::updateDifficulty,
         modifier = modifier,
     )
 }
