@@ -23,7 +23,9 @@ import com.sexadventure.designsystem.listitem.ListItem
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
-import com.sexadventure.mapper.resolveImage
+import com.sexadventure.mapper.resolvePainter
+import com.sexadventure.storage.ImageStorage
+import org.koin.compose.koinInject
 
 @Composable
 fun FavouritePosesScreen(
@@ -33,6 +35,7 @@ fun FavouritePosesScreen(
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
+    val imageStorage = koinInject<ImageStorage>()
 
     LifecycleResumeEffect(Unit) {
         listState.requestScrollToItem(0)
@@ -43,8 +46,8 @@ fun FavouritePosesScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background),
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         TopBar(
             title = Strings.FavouritePoses.SCREEN_TITLE,
@@ -83,12 +86,12 @@ fun FavouritePosesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
-                            .fillMaxSize()
-                            .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
+                        .fillMaxSize()
+                        .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp),
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
-                            image = resolveImage(imageName = pose.imageUrl),
+                            image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,
@@ -110,18 +113,18 @@ fun FavouritePosesScreen(
 private fun FavouritePosesScreenPreview() {
     FavouritePosesScreen(
         state = FavouritePosesState(
-                poses = listOf(
-                        PoseData(
-                            id = 1,
-                            name = "Missionary",
-                            description = "A classic face-to-face position.",
-                            category = "Classic",
-                            difficulty = 1,
-                            personalScore = 7,
-                            isFavorite = true,
-                        ),
-                    ),
+            poses = listOf(
+                PoseData(
+                    id = 1,
+                    name = "Missionary",
+                    description = "A classic face-to-face position.",
+                    category = "Classic",
+                    difficulty = 1,
+                    personalScore = 7,
+                    isFavorite = true,
+                ),
             ),
+        ),
         onPoseClick = {},
         onFavouriteClick = { _, _ -> },
     )
@@ -132,7 +135,7 @@ private fun FavouritePosesScreenPreview() {
 private fun FavouritePosesScreenEmptyPreview() {
     FavouritePosesScreen(
         state = FavouritePosesState(
-            isLoading = true
+            isLoading = true,
         ),
         onPoseClick = {},
         onFavouriteClick = { _, _ -> },

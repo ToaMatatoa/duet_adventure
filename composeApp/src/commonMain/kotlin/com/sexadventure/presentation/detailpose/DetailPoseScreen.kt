@@ -35,13 +35,14 @@ import com.sexadventure.designsystem.theme.FlameColor
 import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
-import com.sexadventure.mapper.resolveImage
+import com.sexadventure.mapper.resolvePainter
+import com.sexadventure.storage.ImageStorage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Flame
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Star
-import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
 fun DetailPoseScreen(
@@ -114,15 +115,16 @@ private fun PoseDetailContent(
             .verticalScroll(state = rememberScrollState())
             .padding(horizontal = 16.dp),
     ) {
-        val imageResource = resolveImage(imageName = pose.imageUrl)
+        val imageStorage = koinInject<ImageStorage>()
+        val painter = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage)
         val imageModifier = Modifier
             .fillMaxWidth()
             .height(280.dp)
             .clip(shape = RoundedCornerShape(size = 16.dp))
 
-        if (imageResource != null) {
+        if (painter != null) {
             Image(
-                painter = painterResource(imageResource),
+                painter = painter,
                 contentDescription = Strings.Common.POSE_IMAGE,
                 contentScale = ContentScale.Crop,
                 modifier = imageModifier,

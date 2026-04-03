@@ -40,7 +40,8 @@ import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.model.displayName
-import com.sexadventure.mapper.resolveImage
+import com.sexadventure.mapper.resolvePainter
+import com.sexadventure.storage.ImageStorage
 
 @Composable
 fun AllPosesScreen(
@@ -59,6 +60,7 @@ fun AllPosesScreen(
     val listState = rememberLazyListState()
     var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
     var showSearchFilterMenu by remember { mutableStateOf(value = false) }
+    val imageStorage = org.koin.compose.koinInject<ImageStorage>()
 
     LifecycleResumeEffect(Unit) {
         listState.requestScrollToItem(0)
@@ -165,7 +167,7 @@ fun AllPosesScreen(
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
-                            image = resolveImage(imageName = pose.imageUrl),
+                            image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,
