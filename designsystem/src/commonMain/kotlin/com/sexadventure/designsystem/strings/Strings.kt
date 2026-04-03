@@ -87,6 +87,7 @@ object Strings {
 
         const val POSE_DIFFICULTY = "Pose difficulty"
         const val POSE_PERSONAL_SCORE = "User personal score"
+        const val USER_COMMENTS_LABEL = "User comments"
 
         const val NO_POSE_DESCRIPTION = "There is no description provided for this pose."
 

@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
@@ -47,11 +50,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sexadventure.POSE_DESCRIPTION_MAX_LENGTH
 import com.sexadventure.POSE_NAME_MAX_LENGTH
+import com.sexadventure.USER_COMMENTS_MAX_LENGTH
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.textfield.ProjectOutlinedTextField
 import com.sexadventure.designsystem.theme.FlameColor
 import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
+import com.sexadventure.domain.model.PoseCategory
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.X
@@ -68,14 +73,19 @@ fun AddPoseScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
+    val commentsFocusRequester = remember { FocusRequester() }
+
     val (name, onNameChange) = rememberSaveable { mutableStateOf(value = "") }
     val (description, onDescriptionChange) = rememberSaveable { mutableStateOf(value = "") }
-    val (personalScore, onPersonalScoreChange) = rememberSaveable { mutableIntStateOf(value = 0) }
+    val poseCategory = rememberSaveable { mutableStateOf<List<String>>(value = emptyList()) }
     val (difficulty, onDifficultyChange) = rememberSaveable { mutableIntStateOf(value = 0) }
+    val (personalScore, onPersonalScoreChange) = rememberSaveable { mutableIntStateOf(value = 0) }
+    val (userComments, onUserCommentsChange) = rememberSaveable { mutableStateOf(value = "") }
 
     var showGallery by remember { mutableStateOf(value = false) }
     var selectedImage by remember { mutableStateOf<PhotoResult?>(value = null) }
     // ToDo category
+    // ToDo best place to fuck
 
     Column(
         modifier = modifier
@@ -105,70 +115,152 @@ fun AddPoseScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .imePadding()
+                .verticalScroll(state = rememberScrollState()),
         ) {
             PosePhoto(
-            selectedImage = selectedImage,
-            showGallery = showGallery,
-            onSelectImage = { selectedImage = it.firstOrNull() },
-            onShowGalleryChange = { showGallery = it },
-        )
+                selectedImage = selectedImage,
+                showGallery = showGallery,
+                onSelectImage = { selectedImage = it.firstOrNull() },
+                onShowGalleryChange = { showGallery = it },
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        ProjectOutlinedTextField(
-            value = name,
-            onValueChange = onNameChange,
-            label = Strings.AddEditPose.POSE_NAME_LABEL,
-            valueMaxLength = POSE_NAME_MAX_LENGTH,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = Next,
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
+            ProjectOutlinedTextField(
+                value = name,
+                onValueChange = onNameChange,
+                label = Strings.AddEditPose.POSE_NAME_LABEL,
+                valueMaxLength = POSE_NAME_MAX_LENGTH,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = Next,
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ProjectOutlinedTextField(
+                value = description,
+                onValueChange = onDescriptionChange,
+                label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
+                valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
+                maxLines = 4,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = Next,
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        commentsFocusRequester.requestFocus()
+                    },
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PoseCategory(
+                isCategoryChosen = { category -> poseCategory.value.contains(category) },
+                onCategoryClick = { category ->
+                    val allName = PoseCategory.ALL.name
+                    val nonAllCategories = PoseCategory.entries
+                        .filter { it != PoseCategory.ALL }
+                        .map { it.name }
+
+                    poseCategory.value = when {
+                        category == allName -> {
+                            if (poseCategory.value.contains(allName)) {
+                                emptyList()
+                            } else {
+                                listOf(allName)
+                            }
+                        }
+
+                        poseCategory.value.contains(category) -> {
+                            poseCategory.value - category
+                        }
+
+                        else -> {
+                            val updated = (poseCategory.value - allName) + category
+                            if (nonAllCategories.all { it in updated }) {
+                                listOf(allName)
+                            } else {
+                                updated
+                            }
+                        }
+                    }
                 },
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-        )
+                modifier = Modifier.fillMaxWidth(),
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        ProjectOutlinedTextField(
-            value = description,
-            onValueChange = onDescriptionChange,
-            label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
-            valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
-            maxLines = 4,
-            keyboardOptions = KeyboardOptions(
-                imeAction = Done,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
+            PoseDifficultyContent(
+                difficulty = difficulty,
+                onDifficultyChange = onDifficultyChange,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            UserPersonalScoreContent(
+                personalScore = personalScore,
+                onPersonalScoreChange = onPersonalScoreChange,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            UserCommentsContent(
+                userComments = userComments,
+                onUserCommentsChange = onUserCommentsChange,
+                onDoneButtonClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
                 },
-            ),
-            modifier = Modifier
-                .fillMaxWidth(),
-        )
+                modifier = Modifier.focusRequester(commentsFocusRequester),
+            )
+        }
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PoseDifficultyContent(
-            difficulty = difficulty,
-            onDifficultyChange = onDifficultyChange,
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        UserPersonalScoreContent(
-            personalScore = personalScore,
-            onPersonalScoreChange = onPersonalScoreChange,
-        )
+@Composable
+private fun PoseCategory(
+    isCategoryChosen: (String) -> Boolean,
+    onCategoryClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(modifier = modifier) {
+        items(items = PoseCategory.entries) { category ->
+            Text(
+                text = category.name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isCategoryChosen(category.name)) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clip(shape = MaterialTheme.shapes.small)
+                    .background(
+                        color = if (isCategoryChosen(category.name)) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                        shape = MaterialTheme.shapes.small,
+                    )
+                    .clickable { onCategoryClick(category.name) }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            )
         }
     }
 }
@@ -197,7 +289,7 @@ private fun PosePhoto(
                     painter = selectedImage.loadPainter()!!,
                     contentDescription = Strings.AddEditPose.POSE_IMAGE,
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
                 )
 
                 Box(
@@ -232,7 +324,7 @@ private fun PosePhoto(
                     onError = { onShowGalleryChange(false) },
                     onDismiss = { onShowGalleryChange(false) },
                     allowMultiple = false,
-                    mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG
+                    mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG,
                 )
             }
         }
@@ -329,7 +421,7 @@ private fun UserPersonalScoreContent(
     onPersonalScoreChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
@@ -384,6 +476,32 @@ private fun UserPersonalScoreContent(
             modifier = Modifier.fillMaxWidth(),
         )
     }
+}
+
+@Composable
+private fun UserCommentsContent(
+    userComments: String,
+    onUserCommentsChange: (String) -> Unit,
+    onDoneButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ProjectOutlinedTextField(
+        value = userComments,
+        onValueChange = onUserCommentsChange,
+        label = Strings.Common.USER_COMMENTS_LABEL,
+        valueMaxLength = USER_COMMENTS_MAX_LENGTH,
+        maxLines = 5,
+        keyboardOptions = KeyboardOptions(
+            imeAction = Done,
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onDoneButtonClick()
+            },
+        ),
+        modifier = modifier
+            .fillMaxWidth(),
+    )
 }
 
 @Preview
