@@ -230,40 +230,6 @@ fun AddPoseScreen(
 }
 
 @Composable
-private fun PoseCategory(
-    isCategoryChosen: (String) -> Boolean,
-    onCategoryClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    LazyRow(modifier = modifier) {
-        items(items = PoseCategory.entries) { category ->
-            Text(
-                text = category.name,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (isCategoryChosen(category.name)) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onBackground
-                },
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .clip(shape = MaterialTheme.shapes.small)
-                    .background(
-                        color = if (isCategoryChosen(category.name)) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.outlineVariant
-                        },
-                        shape = MaterialTheme.shapes.small,
-                    )
-                    .clickable { onCategoryClick(category.name) }
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-        }
-    }
-}
-
-@Composable
 private fun PosePhoto(
     selectedImage: PhotoResult?,
     showGallery: Boolean,
@@ -343,6 +309,40 @@ private fun PosePhoto(
                 text = Strings.AddEditPose.CHOOSE_PHOTO_FROM_GALLERY,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PoseCategory(
+    isCategoryChosen: (String) -> Boolean,
+    onCategoryClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(modifier = modifier) {
+        items(items = PoseCategory.entries) { category ->
+            Text(
+                text = category.name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isCategoryChosen(category.name)) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                },
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clip(shape = MaterialTheme.shapes.small)
+                    .background(
+                        color = if (isCategoryChosen(category.name)) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                        shape = MaterialTheme.shapes.small,
+                    )
+                    .clickable { onCategoryClick(category.name) }
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
             )
         }
     }

@@ -22,6 +22,16 @@ interface MutablePoseDataSource {
         score: Int,
     )
 
+    suspend fun updateUserComments(
+        id: Int,
+        userComments: String,
+    )
+
+    suspend fun updateBestPlacesToUse(
+        id: Int,
+        bestPlacesToUse: String,
+    )
+
     suspend fun deletePose(id: Int)
 }
 
@@ -45,6 +55,16 @@ class MutablePoseDataSourceImpl(
         id: Int,
         score: Int,
     ) = poseDao.updatePersonalScore(id, score)
+
+    override suspend fun updateUserComments(
+        id: Int,
+        userComments: String,
+    ) = poseDao.updateUserComments(id, userComments)
+
+    override suspend fun updateBestPlacesToUse(
+        id: Int,
+        bestPlacesToUse: String,
+    ) = poseDao.updateBestPlacesToUse(id, bestPlacesToUse)
 
     override suspend fun deletePose(id: Int) = poseDao.deletePose(id)
 }
