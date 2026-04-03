@@ -74,6 +74,8 @@ object Strings {
     object Common {
         const val OK = "OK"
 
+        const val SAVE = "Save"
+
         const val CANCEL = "Cancel"
 
         const val BACK = "Back"

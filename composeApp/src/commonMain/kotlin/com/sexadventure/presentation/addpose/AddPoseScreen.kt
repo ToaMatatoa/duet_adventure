@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -84,7 +85,6 @@ fun AddPoseScreen(
 
     var showGallery by remember { mutableStateOf(value = false) }
     var selectedImage by remember { mutableStateOf<PhotoResult?>(value = null) }
-    // ToDo category
     // ToDo best place to fuck
 
     Column(
@@ -92,6 +92,7 @@ fun AddPoseScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .imePadding()
             .clickable(
                 interactionSource = null,
                 indication = null,
@@ -114,8 +115,8 @@ fun AddPoseScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxSize()
-                .imePadding()
+                .weight(1f)
+                .fillMaxWidth()
                 .verticalScroll(state = rememberScrollState()),
         ) {
             PosePhoto(
@@ -227,6 +228,30 @@ fun AddPoseScreen(
                 },
                 modifier = Modifier.focusRequester(commentsFocusRequester),
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        TextButton(
+            onClick = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            },
+            modifier = Modifier
+                .height(height = 56.dp)
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 16.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                    shape = MaterialTheme.shapes.medium,
+                ),
+        ) {
+            Text(
+                text = Strings.Common.SAVE,
+                style = MaterialTheme.typography.bodyLarge,
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
         }
     }
 }
@@ -334,14 +359,12 @@ private fun PosePhoto(
         TextButton(
             onClick = { onShowGalleryChange(true) },
             shape = MaterialTheme.shapes.medium,
-            colors =
-                ButtonDefaults.textButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                ),
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(height = 56.dp),
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(height = 56.dp),
         ) {
             Text(
                 text = Strings.AddEditPose.CHOOSE_PHOTO_FROM_GALLERY,
