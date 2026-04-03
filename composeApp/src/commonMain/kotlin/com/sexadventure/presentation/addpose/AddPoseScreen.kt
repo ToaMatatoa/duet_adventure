@@ -32,10 +32,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,20 +66,21 @@ import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLa
 
 @Composable
 fun AddPoseScreen(
+    state: AddPoseState,
+    onNameChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onCategoryClick: (String) -> Unit,
+    onDifficultyChange: (Int) -> Unit,
+    onPersonalScoreChange: (Int) -> Unit,
+    onUserCommentsChange: (String) -> Unit,
     onBackClick: () -> Unit,
+    onSavePoseClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val commentsFocusRequester = remember { FocusRequester() }
-
-    val (name, onNameChange) = rememberSaveable { mutableStateOf(value = "") }
-    val (description, onDescriptionChange) = rememberSaveable { mutableStateOf(value = "") }
-    val poseCategory = rememberSaveable { mutableStateOf<List<String>>(value = emptyList()) }
-    val (difficulty, onDifficultyChange) = rememberSaveable { mutableIntStateOf(value = 0) }
-    val (personalScore, onPersonalScoreChange) = rememberSaveable { mutableIntStateOf(value = 0) }
-    val (userComments, onUserCommentsChange) = rememberSaveable { mutableStateOf(value = "") }
 
     var showGallery by remember { mutableStateOf(value = false) }
     var selectedImage by remember { mutableStateOf<PhotoResult?>(value = null) }
@@ -129,7 +128,7 @@ fun AddPoseScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             ProjectOutlinedTextField(
-                value = name,
+                value = state.name,
                 onValueChange = onNameChange,
                 label = Strings.AddEditPose.POSE_NAME_LABEL,
                 valueMaxLength = POSE_NAME_MAX_LENGTH,
@@ -150,7 +149,7 @@ fun AddPoseScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             ProjectOutlinedTextField(
-                value = description,
+                value = state.description,
                 onValueChange = onDescriptionChange,
                 label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
                 valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
@@ -170,57 +169,29 @@ fun AddPoseScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PoseCategory(
-                isCategoryChosen = { category -> poseCategory.value.contains(category) },
-                onCategoryClick = { category ->
-                    val allName = PoseCategory.ALL.name
-                    val nonAllCategories = PoseCategory.entries
-                        .filter { it != PoseCategory.ALL }
-                        .map { it.name }
-
-                    poseCategory.value = when {
-                        category == allName -> {
-                            if (poseCategory.value.contains(allName)) {
-                                emptyList()
-                            } else {
-                                listOf(allName)
-                            }
-                        }
-
-                        poseCategory.value.contains(category) -> {
-                            poseCategory.value - category
-                        }
-
-                        else -> {
-                            val updated = (poseCategory.value - allName) + category
-                            if (nonAllCategories.all { it in updated }) {
-                                listOf(allName)
-                            } else {
-                                updated
-                            }
-                        }
-                    }
-                },
+                isCategoryChosen = { category -> state.categories.contains(category) },
+                onCategoryClick = onCategoryClick,
                 modifier = Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             PoseDifficultyContent(
-                difficulty = difficulty,
+                difficulty = state.difficulty,
                 onDifficultyChange = onDifficultyChange,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             UserPersonalScoreContent(
-                personalScore = personalScore,
+                personalScore = state.personalScore,
                 onPersonalScoreChange = onPersonalScoreChange,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             UserCommentsContent(
-                userComments = userComments,
+                userComments = state.userComment,
                 onUserCommentsChange = onUserCommentsChange,
                 onDoneButtonClick = {
                     focusManager.clearFocus()
@@ -236,7 +207,9 @@ fun AddPoseScreen(
             onClick = {
                 focusManager.clearFocus()
                 keyboardController?.hide()
+                onSavePoseClick()
             },
+            enabled = state.isValid,
             modifier = Modifier
                 .height(height = 56.dp)
                 .fillMaxWidth()
@@ -531,6 +504,14 @@ private fun UserCommentsContent(
 @Composable
 fun AddPoseScreenPreview() {
     AddPoseScreen(
+        state = AddPoseState(),
+        onNameChange = {},
+        onDescriptionChange = {},
+        onCategoryClick = {},
+        onDifficultyChange = {},
+        onPersonalScoreChange = {},
+        onUserCommentsChange = {},
         onBackClick = {},
+        onSavePoseClick = {},
     )
 }
