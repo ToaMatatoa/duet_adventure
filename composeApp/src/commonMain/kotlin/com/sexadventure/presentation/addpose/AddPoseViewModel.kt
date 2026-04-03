@@ -1,21 +1,38 @@
 package com.sexadventure.presentation.addpose
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sexadventure.MAX_VALUE
 import com.sexadventure.MIN_VALUE
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.model.displayName
+import com.sexadventure.domain.usecase.SavePoseUseCase
+import com.sexadventure.storage.ImageStorage
+import com.sexadventure.storage.LOCAL_IMAGE_PREFIX
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-class AddPoseViewModel : ViewModel() {
+class AddPoseViewModel(
+    private val imageStorage: ImageStorage,
+    private val savePoseUseCase: SavePoseUseCase,
+) : ViewModel() {
     private val _state: MutableStateFlow<AddPoseState> = MutableStateFlow(value = AddPoseState())
     val state: StateFlow<AddPoseState> = _state.asStateFlow()
 
-    fun onImageUrlChange(imageUrl: String) {
-        _state.value = _state.value.copy(imageUrl = imageUrl)
+    /** Stores raw image bytes from the gallery picker for later persistence */
+    private var pendingImageBytes: ByteArray? = null
+
+    fun onImageSelected(bytes: ByteArray?) {
+        pendingImageBytes = bytes
+    }
+
+    fun onImageRemoved() {
+        pendingImageBytes = null
     }
 
     fun onNameChange(name: String) {
@@ -72,21 +89,31 @@ class AddPoseViewModel : ViewModel() {
         _state.value = _state.value.copy(userComment = userComment)
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     fun savePose() {
-        PoseData(
-            name = _state.value.name,
-            description = _state.value.description,
-            imageUrl = _state.value.imageUrl,
-            category = _state.value.categories.joinToString(separator = ","),
-            difficulty = _state.value.difficulty,
-            personalScore = _state.value.personalScore,
-            isUserCreated = true,
-        )
+        viewModelScope.launch {
+            val imageUrl = pendingImageBytes?.let { bytes ->
+                val fileName = "user_img_${Uuid.random()}.jpg"
+                imageStorage.saveImage(bytes, fileName)
+                "$LOCAL_IMAGE_PREFIX$fileName"
+            } ?: ""
+
+            val pose = PoseData(
+                name = _state.value.name,
+                description = _state.value.description,
+                imageUrl = imageUrl,
+                category = _state.value.categoryDisplay,
+                difficulty = _state.value.difficulty,
+                personalScore = _state.value.personalScore,
+                userComments = _state.value.userComment,
+                isUserCreated = true,
+            )
+            savePoseUseCase(pose)
+        }
     }
 }
 
 data class AddPoseState(
-    val imageUrl: String = "",
     val name: String = "",
     val description: String = "",
     val categories: List<String> = emptyList(),

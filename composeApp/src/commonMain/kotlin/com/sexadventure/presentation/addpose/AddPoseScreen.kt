@@ -59,6 +59,7 @@ import com.sexadventure.domain.model.PoseCategory
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.X
+import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
 import io.github.ismoy.imagepickerkmp.domain.extensions.loadPainter
 import io.github.ismoy.imagepickerkmp.domain.models.GalleryPhotoResult
 import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
@@ -73,6 +74,8 @@ fun AddPoseScreen(
     onDifficultyChange: (Int) -> Unit,
     onPersonalScoreChange: (Int) -> Unit,
     onUserCommentsChange: (String) -> Unit,
+    onImageSelected: (ByteArray?) -> Unit,
+    onImageRemoved: () -> Unit,
     onBackClick: () -> Unit,
     onSavePoseClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,7 +124,15 @@ fun AddPoseScreen(
             PosePhoto(
                 selectedImage = selectedImage,
                 showGallery = showGallery,
-                onSelectImage = { selectedImage = it.firstOrNull() },
+                onSelectImage = { photos ->
+                    val photo = photos.firstOrNull()
+                    selectedImage = photo
+                    if (photo != null) {
+                        onImageSelected(photo.loadBytes())
+                    } else {
+                        onImageRemoved()
+                    }
+                },
                 onShowGalleryChange = { showGallery = it },
             )
 
@@ -511,6 +522,8 @@ fun AddPoseScreenPreview() {
         onDifficultyChange = {},
         onPersonalScoreChange = {},
         onUserCommentsChange = {},
+        onImageSelected = {},
+        onImageRemoved = {},
         onBackClick = {},
         onSavePoseClick = {},
     )

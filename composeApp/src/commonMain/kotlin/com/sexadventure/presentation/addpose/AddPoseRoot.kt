@@ -21,6 +21,8 @@ fun AddPoseRoot(
         onDifficultyChange = viewModel::onDifficultyChange,
         onPersonalScoreChange = viewModel::onPersonalScoreChange,
         onUserCommentsChange = viewModel::onUserCommentChange,
+        onImageSelected = viewModel::onImageSelected,
+        onImageRemoved = viewModel::onImageRemoved,
         onBackClick = onBackClick,
         onSavePoseClick = viewModel::savePose,
         modifier = modifier,

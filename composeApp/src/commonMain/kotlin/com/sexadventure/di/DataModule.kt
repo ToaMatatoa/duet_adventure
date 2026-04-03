@@ -6,4 +6,5 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<PredefinedPosesProvider> { JsonPredefinedPosesProvider() }
+    provideImageStorage()
 }
