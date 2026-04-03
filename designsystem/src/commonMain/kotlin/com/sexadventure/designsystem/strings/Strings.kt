@@ -66,6 +66,7 @@ object Strings {
         const val ONLY_ALLOW_PNG = "Only allows PNG images"
         const val POSE_NAME_LABEL = "Pose name"
         const val POSE_DESCRIPTION_LABEL = "Pose description"
+        const val REQUIRED_FIELDS_HINT = "* Name, category, and difficulty are required"
     }
 
     /* ──────────────────────────────────────────────

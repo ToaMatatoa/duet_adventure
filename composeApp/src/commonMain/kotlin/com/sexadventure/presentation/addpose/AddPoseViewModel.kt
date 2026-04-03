@@ -141,5 +141,5 @@ data class AddPoseState(
     val isValid: Boolean
         get() =
             name.isNotBlank() && categories.isNotEmpty() &&
-                difficulty in MIN_VALUE..MAX_VALUE && personalScore in MIN_VALUE..MAX_VALUE
+                difficulty in MIN_VALUE..MAX_VALUE
 }

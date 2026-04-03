@@ -211,6 +211,15 @@ fun AddPoseScreen(
                 modifier = Modifier.focusRequester(commentsFocusRequester),
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = Strings.AddEditPose.REQUIRED_FIELDS_HINT,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                modifier = Modifier.fillMaxWidth(),
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
         }
 
@@ -226,7 +235,11 @@ fun AddPoseScreen(
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 16.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                    color = if (state.isValid) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                    },
                     shape = MaterialTheme.shapes.medium,
                 ),
         ) {
@@ -234,7 +247,11 @@ fun AddPoseScreen(
                 text = Strings.Common.SAVE,
                 style = MaterialTheme.typography.bodyLarge,
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = if (state.isValid) {
+                    MaterialTheme.colorScheme.onPrimary
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                },
             )
         }
     }
