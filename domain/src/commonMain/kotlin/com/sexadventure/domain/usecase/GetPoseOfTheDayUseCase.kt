@@ -4,7 +4,7 @@ import com.sexadventure.core.database.entity.PoseOfTheDayEntity
 import com.sexadventure.core.repository.SinglePoseRepository
 import com.sexadventure.domain.mapper.toPoseData
 import com.sexadventure.domain.model.PoseData
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 

@@ -1,5 +1,6 @@
 package com.sexadventure.presentation.detailpose
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -35,13 +38,14 @@ import com.sexadventure.designsystem.theme.FlameColor
 import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
-import com.sexadventure.mapper.resolveImage
+import com.sexadventure.mapper.resolvePainter
+import com.sexadventure.storage.ImageStorage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Flame
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Star
-import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
 fun DetailPoseScreen(
@@ -49,14 +53,15 @@ fun DetailPoseScreen(
     onBackClick: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
+    onDifficultyChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background),
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         TopBar(
             title = Strings.PoseDetail.SCREEN_TITLE,
@@ -95,6 +100,7 @@ fun DetailPoseScreen(
                     pose = state.pose,
                     onToggleFavourite = onToggleFavourite,
                     onScoreChange = onScoreChange,
+                    onDifficultyChange = onDifficultyChange,
                 )
             }
         }
@@ -106,23 +112,25 @@ private fun PoseDetailContent(
     pose: PoseData,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
+    onDifficultyChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(state = rememberScrollState())
-                .padding(horizontal = 16.dp),
+            .fillMaxSize()
+            .verticalScroll(state = rememberScrollState())
+            .padding(horizontal = 16.dp),
     ) {
-        val imageResource = resolveImage(imageName = pose.imageUrl)
+        val imageStorage = koinInject<ImageStorage>()
+        val painter = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage)
         val imageModifier = Modifier
-                .fillMaxWidth()
-                .height(280.dp)
-                .clip(shape = RoundedCornerShape(size = 16.dp))
+            .fillMaxWidth()
+            .height(280.dp)
+            .clip(shape = RoundedCornerShape(size = 16.dp))
 
-        if (imageResource != null) {
+        if (painter != null) {
             Image(
-                painter = painterResource(imageResource),
+                painter = painter,
                 contentDescription = Strings.Common.POSE_IMAGE,
                 contentScale = ContentScale.Crop,
                 modifier = imageModifier,
@@ -131,9 +139,9 @@ private fun PoseDetailContent(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = imageModifier.background(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(size = 16.dp),
-                    ),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(size = 16.dp),
+                ),
             ) {
                 Icon(
                     imageVector = TablerIcons.Photo,
@@ -162,10 +170,10 @@ private fun PoseDetailContent(
                     imageVector = TablerIcons.Heart,
                     contentDescription = Strings.Common.FAVOURITE_POSE,
                     tint = if (pose.isFavorite) {
-                            FlameColor
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
+                        FlameColor
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
                     modifier = Modifier.size(28.dp),
                 )
             }
@@ -187,8 +195,8 @@ private fun PoseDetailContent(
             text = pose.description.ifBlank { Strings.Common.NO_POSE_DESCRIPTION },
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground.copy(
-                    alpha = if (pose.description.isNotBlank()) 0.7f else 0.4f,
-                ),
+                alpha = if (pose.description.isNotBlank()) 0.7f else 0.4f,
+            ),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -198,10 +206,10 @@ private fun PoseDetailContent(
                 imageVector = TablerIcons.Flame,
                 contentDescription = Strings.Common.POSE_DIFFICULTY,
                 tint = if (pose.difficulty > 0) {
-                        FlameColor
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    },
+                    FlameColor
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                },
                 modifier = Modifier.size(20.dp),
             )
 
@@ -209,17 +217,41 @@ private fun PoseDetailContent(
 
             Text(
                 text = if (pose.difficulty > 0) {
-                        "Difficulty: ${pose.difficulty}/10"
-                    } else {
-                        "Difficulty: –/10"
-                    },
+                    "Difficulty: ${pose.difficulty}/10"
+                } else {
+                    "Difficulty: –/10"
+                },
                 style = MaterialTheme.typography.titleSmall,
                 color = if (pose.difficulty > 0) {
-                        MaterialTheme.colorScheme.onBackground
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
+        }
+
+        if (pose.isUserCreated) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Slider(
+                value = pose.difficulty.toFloat(),
+                onValueChange = { onDifficultyChange(it.toInt()) },
+                valueRange = 0f..10f,
+                steps = 0,
+                colors = SliderDefaults.colors(
+                    thumbColor = if (pose.difficulty > 0) {
+                        FlameColor
                     } else {
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                           },
-                )
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    },
+                    activeTrackColor = if (pose.difficulty > 0) {
+                        FlameColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                    },
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -246,11 +278,11 @@ private fun PoseDetailContent(
                 },
                 style = MaterialTheme.typography.titleSmall,
                 color = if (pose.personalScore > 0) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
-                    },
-                )
+                    MaterialTheme.colorScheme.onBackground
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                },
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -261,11 +293,34 @@ private fun PoseDetailContent(
             valueRange = 0f..10f,
             steps = 0,
             colors = SliderDefaults.colors(
-                    thumbColor = GoldenColor,
-                    activeTrackColor = GoldenColor,
-                ),
+                thumbColor = GoldenColor,
+                activeTrackColor = GoldenColor,
+            ),
             modifier = Modifier.fillMaxWidth(),
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        AnimatedVisibility(visible = pose.userComments.isNotBlank()) {
+            OutlinedTextField(
+                value = pose.userComments,
+                colors = MaterialTheme.colorScheme.run {
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = onBackground.copy(alpha = 0.7f),
+                        unfocusedBorderColor = onBackground.copy(alpha = 0.7f),
+                        disabledBorderColor = onBackground.copy(alpha = 0.7f),
+                        focusedLabelColor = onBackground.copy(alpha = 0.7f),
+                        unfocusedLabelColor = onBackground.copy(alpha = 0.7f),
+                        disabledLabelColor = onBackground.copy(alpha = 0.7f),
+                        cursorColor = onBackground.copy(alpha = 0.7f),
+                    )
+                },
+                onValueChange = { /* No-op, read-only */ },
+                label = { Text(Strings.PoseDetail.USER_COMMENTS_LABEL) },
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }
 
@@ -274,20 +329,21 @@ private fun PoseDetailContent(
 private fun DetailPoseScreenPreview() {
     DetailPoseScreen(
         state = DetailPoseState(
-                pose = PoseData(
-                        id = 1,
-                        name = "Missionary",
-                        description = "A classic face-to-face position. One partner lies on their back while the other is on top.",
-                        imageUrl = "missionary",
-                        category = "Classic",
-                        difficulty = 5,
-                        personalScore = 5,
-                        isFavorite = true,
-                    ),
+            pose = PoseData(
+                id = 1,
+                name = "Missionary",
+                description = "A classic face-to-face position. One partner lies on their back while the other is on top.",
+                imageUrl = "missionary",
+                category = "Classic",
+                difficulty = 5,
+                personalScore = 5,
+                isFavorite = true,
             ),
+        ),
         onBackClick = {},
         onToggleFavourite = {},
         onScoreChange = {},
+        onDifficultyChange = {},
     )
 }
 
@@ -299,5 +355,6 @@ private fun DetailPoseScreenLoadingPreview() {
         onBackClick = {},
         onToggleFavourite = {},
         onScoreChange = {},
+        onDifficultyChange = {},
     )
 }

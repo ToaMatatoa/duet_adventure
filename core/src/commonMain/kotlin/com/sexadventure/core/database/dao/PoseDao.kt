@@ -78,8 +78,30 @@ interface PoseDao {
         score: Int,
     )
 
+    /** Update user comments */
+    @Query("UPDATE pose SET userComments = :userComments WHERE id = :id")
+    suspend fun updateUserComments(
+        id: Int,
+        userComments: String,
+    )
+
+    /** Update difficulty – only meaningful for user-created poses */
+    @Query("UPDATE pose SET difficulty = :difficulty WHERE id = :id")
+    suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    )
+
+    /** Update best places to use */
+    @Query("UPDATE pose SET bestPlacesToUse = :bestPlacesToUse WHERE id = :id")
+    suspend fun updateBestPlacesToUse(
+        id: Int,
+        bestPlacesToUse: String,
+    )
+
     // ── Delete pose ──────────────────────────────────────────────────────
 
     @Query("DELETE FROM pose WHERE id = :id")
     suspend fun deletePose(id: Int)
 }
+

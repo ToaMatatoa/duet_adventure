@@ -19,15 +19,18 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.ArrowsDownUp
 import compose.icons.tablericons.ListSearch
+import compose.icons.tablericons.Plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     title: String,
-    showBackButton: Boolean,
     modifier: Modifier = Modifier,
+    showBackButton: Boolean = false,
+    showAddNewPoseButton: Boolean = false,
     showSearchFilter: Boolean = false,
     showCategoryFilter: Boolean = false,
+    onAddNewPose: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onShowSearchFilterClick: () -> Unit = {},
     onShowCategoryFilterClick: () -> Unit = {},
@@ -35,12 +38,23 @@ fun TopBar(
 ) {
     CenterAlignedTopAppBar(
         navigationIcon = {
+            AnimatedVisibility(visible = showAddNewPoseButton) {
+                IconButton(onClick = onAddNewPose) {
+                    Icon(
+                        imageVector = TablerIcons.Plus,
+                        contentDescription = Strings.Common.ADD_NEW_POSE,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            }
             AnimatedVisibility(visible = showBackButton) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = TablerIcons.ArrowLeft,
                         contentDescription = Strings.Common.BACK,
                         tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp),
                     )
                 }
             }

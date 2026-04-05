@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +39,9 @@ import compose.icons.tablericons.Flame
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Star
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
 
 /**
- * @param image         A [DrawableResource] from `Res.drawable.*`. `null` → placeholder icon.
+ * @param image         A [Painter] for the pose image. `null` → placeholder icon.
  * @param title         Pose name — card headline.
  * @param description   Optional secondary text.
  * @param category      Comma-separated categories (e.g. "Classic, Oral").
@@ -56,7 +55,7 @@ fun ListItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    image: DrawableResource? = null,
+    image: Painter? = null,
     description: String? = "",
     category: String = "",
     difficulty: Int = 0,
@@ -76,12 +75,12 @@ fun ListItem(
             modifier = Modifier.padding(all = 12.dp),
         ) {
             val imageModifier = Modifier
-                    .size(72.dp)
-                    .clip(shape = RoundedCornerShape(size = 12.dp))
+                .size(72.dp)
+                .clip(shape = RoundedCornerShape(size = 12.dp))
 
             if (image != null) {
                 Image(
-                    painter = painterResource(image),
+                    painter = image,
                     contentDescription = Strings.Common.POSE_IMAGE,
                     contentScale = ContentScale.Crop,
                     modifier = imageModifier,
@@ -90,9 +89,9 @@ fun ListItem(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = imageModifier.background(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(size = 12.dp),
-                        ),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(size = 12.dp),
+                    ),
                 ) {
                     Icon(
                         imageVector = TablerIcons.Photo,

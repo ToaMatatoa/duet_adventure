@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "235b5fd255a2b4be21d61eb544ce2b0d",
+    "identityHash": "a855c9d9b42f90b4e83da5718c45ddf8",
     "entities": [
       {
         "tableName": "pose",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `category` TEXT NOT NULL, `difficulty` INTEGER NOT NULL, `personalScore` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `isUserCreated` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `category` TEXT NOT NULL, `difficulty` INTEGER NOT NULL, `personalScore` INTEGER NOT NULL, `userComments` TEXT NOT NULL, `bestPlacesToUse` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `isUserCreated` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -48,6 +48,18 @@
             "fieldPath": "personalScore",
             "columnName": "personalScore",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userComments",
+            "columnName": "userComments",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bestPlacesToUse",
+            "columnName": "bestPlacesToUse",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -114,7 +126,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '235b5fd255a2b4be21d61eb544ce2b0d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a855c9d9b42f90b4e83da5718c45ddf8')"
     ]
   }
 }

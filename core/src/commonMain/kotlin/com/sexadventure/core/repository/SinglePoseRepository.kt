@@ -27,6 +27,24 @@ interface SinglePoseRepository {
         score: Int,
     )
 
+    /** Change difficulty of a user-created pose in db */
+    suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    )
+
+    /** Update user comments for the pose in db */
+    suspend fun updateUserComments(
+        id: Int,
+        userComments: String,
+    )
+
+    /** Update best places to use for the pose in db */
+    suspend fun updateBestPlacesToUse(
+        id: Int,
+        bestPlacesToUse: String,
+    )
+
     /** Get pose of the day (its ID and date) to get full data
      * about this pose from main pose table */
     suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity?
@@ -58,6 +76,21 @@ class SinglePoseRepositoryImpl(
         id: Int,
         score: Int,
     ) = mutablePoseDataSource.updatePersonalScore(id, score)
+
+    override suspend fun updateDifficulty(
+        id: Int,
+        difficulty: Int,
+    ) = mutablePoseDataSource.updateDifficulty(id, difficulty)
+
+    override suspend fun updateUserComments(
+        id: Int,
+        userComments: String,
+    ) = mutablePoseDataSource.updateUserComments(id, userComments)
+
+    override suspend fun updateBestPlacesToUse(
+        id: Int,
+        bestPlacesToUse: String,
+    ) = mutablePoseDataSource.updateBestPlacesToUse(id, bestPlacesToUse)
 
     override suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity? =
         persistentPoseDataSource.getNecessaryInfoAboutPoseOfTheDay()

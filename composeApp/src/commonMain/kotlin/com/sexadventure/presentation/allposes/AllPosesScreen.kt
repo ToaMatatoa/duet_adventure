@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -38,13 +40,15 @@ import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.model.displayName
-import com.sexadventure.mapper.resolveImage
+import com.sexadventure.mapper.resolvePainter
+import com.sexadventure.storage.ImageStorage
 
 @Composable
 fun AllPosesScreen(
     state: AllPosesState,
     searchQuery: String,
     onPoseClick: (Int) -> Unit,
+    onOpenAddPoseScreen:() -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onCategorySelect: (PoseCategory) -> Unit,
@@ -52,9 +56,16 @@ fun AllPosesScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val searchFocusRequester = remember { FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
+    val listState = rememberLazyListState()
     var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
     var showSearchFilterMenu by remember { mutableStateOf(value = false) }
+    val imageStorage = org.koin.compose.koinInject<ImageStorage>()
+
+    LifecycleResumeEffect(Unit) {
+        listState.requestScrollToItem(0)
+        onPauseOrDispose { }
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -65,9 +76,10 @@ fun AllPosesScreen(
     ) {
         TopBar(
             title = Strings.AllPoses.SCREEN_TITLE,
-            showBackButton = false,
+            showAddNewPoseButton = true,
             showSearchFilter = true,
             showCategoryFilter = true,
+            onAddNewPose = onOpenAddPoseScreen,
             onShowSearchFilterClick = {
                 if (showSearchFilterMenu) {
                     focusManager.clearFocus()
@@ -84,38 +96,21 @@ fun AllPosesScreen(
                 showSearchFilterMenu = false
             },
             categoryFilterContent = {
-                DropdownMenu(
+                PoseCategoryDropDownMenu(
                     expanded = showCategoryFilterMenu,
                     onDismissRequest = { showCategoryFilterMenu = false },
-                    offset = DpOffset(x = -(16).dp, y = 8.dp),
-                    modifier = Modifier.fillMaxWidth(fraction = 0.3f),
-                ) {
-                    PoseCategory.entries.forEach { category ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = category.displayName(),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = if (category == state.selectedCategory) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface
-                                    },
-                                )
-                            },
-                            onClick = {
-                                onCategorySelect(category)
-                                showCategoryFilterMenu = false
-                            },
-                        )
-                    }
-                }
+                    selectedCategory = state.selectedCategory,
+                    onCategorySelect = { category ->
+                        onCategorySelect(category)
+                        showCategoryFilterMenu = false
+                    },
+                )
             },
         )
 
         AnimatedVisibility(visible = showSearchFilterMenu) {
             LaunchedEffect(Unit) {
-                searchFocusRequester.requestFocus()
+                focusRequester.requestFocus()
             }
 
             OutlinedTextField(
@@ -124,13 +119,13 @@ fun AllPosesScreen(
                 shape = RoundedCornerShape(size = 12.dp),
                 placeholder = {
                     Text(
-                        text = "Enter pose name",
+                        text = Strings.AllPoses.ENTER_POSE_NAME,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     )
                 },
                 modifier = Modifier
-                    .focusRequester(searchFocusRequester)
+                    .focusRequester(focusRequester)
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             )
@@ -163,6 +158,7 @@ fun AllPosesScreen(
 
             else -> {
                 LazyColumn(
+                    state = listState,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
@@ -171,14 +167,19 @@ fun AllPosesScreen(
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
-                            image = resolveImage(imageName = pose.imageUrl),
+                            image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,
                             personalScore = pose.personalScore,
                             category = pose.category,
                             isFavourite = pose.isFavorite,
-                            onClick = { onPoseClick(pose.id) },
+                            onClick = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                                onSearchQueryChange("")
+                                onPoseClick(pose.id)
+                            },
                             onFavouriteClick = { onFavouriteClick(pose.id, pose.isFavorite) },
                         )
                     }
@@ -188,12 +189,49 @@ fun AllPosesScreen(
     }
 }
 
+@Composable
+private fun PoseCategoryDropDownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    selectedCategory: PoseCategory?,
+    onCategorySelect: (PoseCategory) -> Unit,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        offset = DpOffset(x = -(16).dp, y = 8.dp),
+        modifier = Modifier.fillMaxWidth(fraction = 0.3f),
+    ) {
+        PoseCategory.entries.forEach { category ->
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = category.displayName(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = if (category == selectedCategory) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                    )
+                },
+                onClick = {
+                    onCategorySelect(category)
+                    onDismissRequest()
+                },
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun AllPosesScreenPreview() {
     AllPosesScreen(
-        state = AllPosesState(
-                poses = listOf(
+        state =
+            AllPosesState(
+                poses =
+                    listOf(
                         PoseData(
                             id = 1,
                             name = "Pose 1",
@@ -221,11 +259,12 @@ private fun AllPosesScreenPreview() {
                             difficulty = 8,
                             personalScore = 9,
                             isFavorite = true,
-                        ),
-                    ),
+                ),
             ),
-        searchQuery = "",
+                ),
+            searchQuery = "",
         onPoseClick = {},
+        onOpenAddPoseScreen = {},
         onFavouriteClick = { _, _ -> },
         onSearchQueryChange = {},
         onCategorySelect = {},
@@ -239,6 +278,7 @@ private fun AllPosesScreenEmptyPreview() {
         state = AllPosesState(),
         searchQuery = "",
         onPoseClick = {},
+        onOpenAddPoseScreen = {},
         onFavouriteClick = { _, _ -> },
         onSearchQueryChange = {},
         onCategorySelect = {},
@@ -252,6 +292,7 @@ private fun AllPosesScreenLoadingPreview() {
         state = AllPosesState(isLoading = true),
         searchQuery = "",
         onPoseClick = {},
+        onOpenAddPoseScreen = {},
         onFavouriteClick = { _, _ -> },
         onSearchQueryChange = {},
         onCategorySelect = {},

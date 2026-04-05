@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetPoseByIdUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
+import com.sexadventure.domain.usecase.UpdateDifficultyUseCase
 import com.sexadventure.domain.usecase.UpdatePersonalScoreUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +19,7 @@ class DetailPoseViewModel(
     private val getPoseByIdUseCase: GetPoseByIdUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val updatePersonalScoreUseCase: UpdatePersonalScoreUseCase,
+    private val updateDifficultyUseCase: UpdateDifficultyUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(value = DetailPoseState())
     val state: StateFlow<DetailPoseState> = _state.asStateFlow()
@@ -51,6 +53,17 @@ class DetailPoseViewModel(
             updatePersonalScoreUseCase(pose.id, score)
             _state.update {
                 it.copy(pose = pose.copy(personalScore = score))
+            }
+        }
+    }
+
+    fun updateDifficulty(difficulty: Int) {
+        val pose = _state.value.pose ?: return
+        if (!pose.isUserCreated) return
+        viewModelScope.launch {
+            updateDifficultyUseCase(pose.id, difficulty)
+            _state.update {
+                it.copy(pose = pose.copy(difficulty = difficulty))
             }
         }
     }

@@ -8,6 +8,8 @@ data class PoseData(
     val category: String = "",
     val difficulty: Int = 0,
     val personalScore: Int = 0,
+    val userComments: String = "",
+    val bestPlacesToUse: String = "",
     val isFavorite: Boolean = false,
     val isUserCreated: Boolean = false,
 )

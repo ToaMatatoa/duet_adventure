@@ -12,6 +12,8 @@ fun PoseEntity.toPoseData(): PoseData = PoseData(
     difficulty = difficulty,
     personalScore = personalScore,
     isFavorite = isFavorite,
+    userComments = userComments,
+    bestPlacesToUse = bestPlacesToUse,
     isUserCreated = isUserCreated,
 )
 
@@ -24,5 +26,7 @@ fun PoseData.toPoseEntity(): PoseEntity = PoseEntity(
     difficulty = difficulty,
     personalScore = personalScore,
     isFavorite = isFavorite,
+    userComments = userComments,
+    bestPlacesToUse = bestPlacesToUse,
     isUserCreated = isUserCreated,
 )
