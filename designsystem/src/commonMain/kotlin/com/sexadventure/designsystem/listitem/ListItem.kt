@@ -1,5 +1,6 @@
 package com.sexadventure.designsystem.listitem
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +56,7 @@ fun ListItem(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isUserCreated: Boolean = false,
     image: Painter? = null,
     description: String? = "",
     category: String = "",
@@ -66,8 +68,12 @@ fun ListItem(
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(
+            width = if (isUserCreated) 1.dp else 0.dp,
+            color = if (isUserCreated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        ),
         shape = RoundedCornerShape(size = 12.dp),
         modifier = modifier.fillMaxWidth(),
     ) {
@@ -117,14 +123,14 @@ fun ListItem(
 
                 Text(
                     text = if (!description.isNullOrEmpty()) {
-                            description
-                        } else {
-                            Strings.Common.NO_POSE_DESCRIPTION
-                        },
+                        description
+                    } else {
+                        Strings.Common.NO_POSE_DESCRIPTION
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(
-                            alpha = if (!description.isNullOrEmpty()) 0.7f else 0.4f,
-                        ),
+                        alpha = if (!description.isNullOrEmpty()) 0.7f else 0.4f,
+                    ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -173,11 +179,11 @@ private fun StatsRow(
             text = if (difficulty > 0) "$difficulty/10" else "–/10",
             style = MaterialTheme.typography.labelSmall,
             color = if (difficulty > 0) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    mutedColor
-                },
-            )
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                mutedColor
+            },
+        )
 
         Text(
             text = "  ·  ",
@@ -198,11 +204,11 @@ private fun StatsRow(
             text = if (personalScore > 0) "$personalScore/10" else "–/10",
             style = MaterialTheme.typography.labelSmall,
             color = if (personalScore > 0) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    mutedColor
-                },
-            )
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                mutedColor
+            },
+        )
     }
 }
 

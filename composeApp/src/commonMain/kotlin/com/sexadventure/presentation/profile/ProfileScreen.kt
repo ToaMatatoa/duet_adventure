@@ -206,6 +206,7 @@ private fun PoseListItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
+        isUserCreated = pose.isUserCreated,
         title = pose.name,
         description = pose.description,
         onClick = { onOpenPoseDetails(pose.id) },

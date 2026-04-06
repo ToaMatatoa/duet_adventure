@@ -91,6 +91,7 @@ fun FavouritePosesScreen(
                 ) {
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
+                            isUserCreated = pose.isUserCreated,
                             image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
                             title = pose.name,
                             description = pose.description,
