@@ -2,6 +2,7 @@ package com.sexadventure.presentation.allposes
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -14,6 +15,11 @@ fun AllPosesRoot(
     val viewModel = koinViewModel<AllPosesViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
     val searchQuery = viewModel.searchQuery.collectAsStateWithLifecycle().value
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.updateSearchPoseQuery("")
+        onPauseOrDispose { }
+    }
 
     AllPosesScreen(
         state = state,
