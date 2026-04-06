@@ -1,5 +1,6 @@
 package com.sexadventure.domain.di
 
+import com.sexadventure.domain.usecase.DeletePoseUseCase
 import com.sexadventure.domain.usecase.GetFavouritePosesUseCase
 import com.sexadventure.domain.usecase.GetPoseByIdUseCase
 import com.sexadventure.domain.usecase.GetPoseOfTheDayUseCase
@@ -32,4 +33,5 @@ val useCaseModule = module {
     factoryOf(::UpdateUserCommentsUseCase)
     factoryOf(::UpdateBestPlacesToUseUseCase)
     factoryOf(::SearchPosesByNameUseCase)
+    factoryOf(::DeletePoseUseCase)
 }
