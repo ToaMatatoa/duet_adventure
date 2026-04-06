@@ -10,9 +10,11 @@ import com.sexadventure.domain.model.displayName
 import com.sexadventure.domain.usecase.SavePoseUseCase
 import com.sexadventure.storage.ImageStorage
 import com.sexadventure.storage.LOCAL_IMAGE_PREFIX
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -24,8 +26,8 @@ class AddPoseViewModel(
     private val _state: MutableStateFlow<AddPoseState> = MutableStateFlow(value = AddPoseState())
     val state: StateFlow<AddPoseState> = _state.asStateFlow()
 
-    private val _effects: MutableStateFlow<AddPoseEffects?> = MutableStateFlow(value = null)
-    val effects: StateFlow<AddPoseEffects?> = _effects.asStateFlow()
+    private val _effects = Channel<AddPoseEffects>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     /** Stores raw image bytes from the gallery picker for later persistence */
     private var pendingImageBytes: ByteArray? = null
@@ -113,8 +115,8 @@ class AddPoseViewModel(
             )
             savePoseUseCase(poseData = pose)
 
-            _effects.value = AddPoseEffects.ShowMessage
-            _effects.value = AddPoseEffects.BackToHome
+            _effects.send(AddPoseEffects.ShowMessage)
+            _effects.send(AddPoseEffects.BackToHome)
         }
     }
 }

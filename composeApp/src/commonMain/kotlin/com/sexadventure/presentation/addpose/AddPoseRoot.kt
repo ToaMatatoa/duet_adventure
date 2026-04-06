@@ -21,25 +21,24 @@ fun AddPoseRoot(
 ) {
     val viewModel = koinViewModel<AddPoseViewModel>()
     val state = viewModel.state.collectAsStateWithLifecycle().value
-    val effects = viewModel.effects.collectAsStateWithLifecycle().value
     val scope = rememberCoroutineScope()
     val backClick by rememberUpdatedState(newValue = onBackClick)
 
-    LaunchedEffect(effects) {
-        when (effects) {
-            is AddPoseEffects.BackToHome -> backClick()
+    LaunchedEffect(Unit) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                is AddPoseEffects.BackToHome -> backClick()
 
-            is AddPoseEffects.ShowMessage -> {
-                scope.launch {
-                    SnackbarController.sendEvent(
-                        event = SnackbarEvent(
-                            message = Strings.AddEditPose.POSE_SAVED,
-                        ),
-                    )
+                is AddPoseEffects.ShowMessage -> {
+                    scope.launch {
+                        SnackbarController.sendEvent(
+                            event = SnackbarEvent(
+                                message = Strings.AddEditPose.POSE_SAVED,
+                            ),
+                        )
+                    }
                 }
             }
-
-            null -> Unit
         }
     }
 
