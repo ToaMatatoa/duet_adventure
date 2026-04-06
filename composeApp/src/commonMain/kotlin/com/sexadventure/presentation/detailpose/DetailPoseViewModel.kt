@@ -4,13 +4,16 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sexadventure.domain.model.PoseData
+import com.sexadventure.domain.usecase.DeletePoseUseCase
 import com.sexadventure.domain.usecase.GetPoseByIdUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import com.sexadventure.domain.usecase.UpdateDifficultyUseCase
 import com.sexadventure.domain.usecase.UpdatePersonalScoreUseCase
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -20,9 +23,13 @@ class DetailPoseViewModel(
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val updatePersonalScoreUseCase: UpdatePersonalScoreUseCase,
     private val updateDifficultyUseCase: UpdateDifficultyUseCase,
+    private val deletePoseUseCase: DeletePoseUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(value = DetailPoseState())
     val state: StateFlow<DetailPoseState> = _state.asStateFlow()
+
+    private val _effects = Channel<DetailPoseEffects>(Channel.BUFFERED)
+    val effects = _effects.receiveAsFlow()
 
     init {
         loadPose()
@@ -33,6 +40,15 @@ class DetailPoseViewModel(
             _state.update { it.copy(isLoading = true) }
             val pose = getPoseByIdUseCase(poseId)
             _state.update { it.copy(pose = pose, isLoading = false) }
+        }
+    }
+
+    fun deletePose() {
+        val pose = _state.value.pose ?: return
+        viewModelScope.launch {
+            deletePoseUseCase.invoke(pose.id)
+            _effects.send(DetailPoseEffects.ShowMessage)
+            _effects.send(DetailPoseEffects.BackToHome)
         }
     }
 

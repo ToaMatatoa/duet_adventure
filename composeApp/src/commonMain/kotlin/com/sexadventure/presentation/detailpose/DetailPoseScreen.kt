@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sexadventure.designsystem.strings.Strings
@@ -45,12 +46,14 @@ import compose.icons.tablericons.Flame
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Star
+import compose.icons.tablericons.Trash
 import org.koin.compose.koinInject
 
 @Composable
 fun DetailPoseScreen(
     state: DetailPoseState,
     onBackClick: () -> Unit,
+    onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
     onDifficultyChange: (Int) -> Unit,
@@ -98,6 +101,7 @@ fun DetailPoseScreen(
             else -> {
                 PoseDetailContent(
                     pose = state.pose,
+                    onDeletePose = onDeletePose,
                     onToggleFavourite = onToggleFavourite,
                     onScoreChange = onScoreChange,
                     onDifficultyChange = onDifficultyChange,
@@ -110,6 +114,7 @@ fun DetailPoseScreen(
 @Composable
 private fun PoseDetailContent(
     pose: PoseData,
+    onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
     onDifficultyChange: (Int) -> Unit,
@@ -162,8 +167,20 @@ private fun PoseDetailContent(
                 text = pose.name,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground,
+                overflow = Ellipsis,
                 modifier = Modifier.weight(1f),
             )
+
+            AnimatedVisibility(visible = pose.isUserCreated) {
+                IconButton(onClick = { onDeletePose() }) {
+                    Icon(
+                        imageVector = TablerIcons.Trash,
+                        contentDescription = Strings.Common.FAVOURITE_POSE,
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            }
 
             IconButton(onClick = onToggleFavourite) {
                 Icon(
@@ -329,18 +346,10 @@ private fun PoseDetailContent(
 private fun DetailPoseScreenPreview() {
     DetailPoseScreen(
         state = DetailPoseState(
-            pose = PoseData(
-                id = 1,
-                name = "Missionary",
-                description = "A classic face-to-face position. One partner lies on their back while the other is on top.",
-                imageUrl = "missionary",
-                category = "Classic",
-                difficulty = 5,
-                personalScore = 5,
-                isFavorite = true,
-            ),
+            pose = null,
         ),
         onBackClick = {},
+        onDeletePose = {},
         onToggleFavourite = {},
         onScoreChange = {},
         onDifficultyChange = {},
@@ -353,6 +362,7 @@ private fun DetailPoseScreenLoadingPreview() {
     DetailPoseScreen(
         state = DetailPoseState(isLoading = true),
         onBackClick = {},
+        onDeletePose = {},
         onToggleFavourite = {},
         onScoreChange = {},
         onDifficultyChange = {},
