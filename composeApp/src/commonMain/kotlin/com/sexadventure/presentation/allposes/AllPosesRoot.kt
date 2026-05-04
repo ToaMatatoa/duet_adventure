@@ -24,6 +24,7 @@ fun AllPosesRoot(
     AllPosesScreen(
         state = state,
         searchQuery = searchQuery,
+        loadImage = viewModel::loadImage,
         onPoseClick = onPoseClick,
         onOpenAddPoseScreen = onOpenAddPoseScreen,
         onFavouriteClick = viewModel::toggleFavourite,

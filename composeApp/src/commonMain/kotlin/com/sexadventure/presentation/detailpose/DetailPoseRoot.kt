@@ -49,6 +49,7 @@ fun DetailPoseRoot(
 
     DetailPoseScreen(
         state = state,
+        loadImage = viewModel::loadImage,
         onBackClick = onBackClick,
         onDeletePose = viewModel::deletePose,
         onToggleFavourite = viewModel::toggleFavourite,

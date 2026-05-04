@@ -9,6 +9,7 @@ import com.sexadventure.domain.usecase.GetPoseOfTheDayUseCase
 import com.sexadventure.domain.usecase.GetPosesCountUseCase
 import com.sexadventure.domain.usecase.GetRandomPoseUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
+import com.sexadventure.domain.usecase.imagestorage.GetImageUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     getPosesCountUseCase: GetPosesCountUseCase,
+    private val getImageUseCase: GetImageUseCase,
     private val getPoseByIdUseCase: GetPoseByIdUseCase,
     private val getRandomPoseUseCase: GetRandomPoseUseCase,
     private val getPoseOfTheDayUseCase: GetPoseOfTheDayUseCase,
@@ -36,6 +38,8 @@ class ProfileViewModel(
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = STOP_TIMEOUT_MILLIS),
             initialValue = ProfileState(),
         )
+
+    suspend fun loadImage(imageName: String): ByteArray? = getImageUseCase(imageName)
 
     /** Re-fetches visible poses from Room so favourite/score changes are reflected. */
     fun refreshVisiblePoses() {

@@ -30,14 +30,13 @@ import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.mapper.resolvePainter
-import com.sexadventure.storage.ImageStorage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.X
-import org.koin.compose.koinInject
 
 @Composable
 fun ProfileScreen(
     state: ProfileState,
+    loadImage: suspend (String) -> ByteArray? = { null },
     onGetRandomPose: () -> Unit,
     onTogglePoseOfTheDay: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
@@ -45,8 +44,6 @@ fun ProfileScreen(
     onRemovePose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val imageStorage = koinInject<ImageStorage>()
-
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,7 +64,7 @@ fun ProfileScreen(
         ) {
             RandomPoseElement(
                 pose = state.randomPose,
-                imageStorage = imageStorage,
+                loadImage = loadImage,
                 onGetRandomPose = onGetRandomPose,
                 onFavouriteClick = onFavouriteClick,
                 onOpenPoseDetails = onOpenPoseDetails,
@@ -77,7 +74,7 @@ fun ProfileScreen(
 
             PoseOfTheDayElement(
                 pose = state.poseOfTheDay,
-                imageStorage = imageStorage,
+                loadImage = loadImage,
                 isVisible = state.showPoseOfTheDay,
                 onToggle = onTogglePoseOfTheDay,
                 onFavouriteClick = onFavouriteClick,
@@ -91,7 +88,7 @@ fun ProfileScreen(
 @Composable
 private fun RandomPoseElement(
     pose: PoseData?,
-    imageStorage: ImageStorage,
+    loadImage: suspend (String) -> ByteArray?,
     onGetRandomPose: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onOpenPoseDetails: (Int) -> Unit,
@@ -144,7 +141,7 @@ private fun RandomPoseElement(
         if (pose != null) {
             PoseListItem(
                 pose = pose,
-                imageStorage= imageStorage,
+                loadImage = loadImage,
                 onOpenPoseDetails = onOpenPoseDetails,
                 onFavouriteClick = onFavouriteClick,
             )
@@ -155,7 +152,7 @@ private fun RandomPoseElement(
 @Composable
 private fun PoseOfTheDayElement(
     pose: PoseData?,
-    imageStorage: ImageStorage,
+    loadImage: suspend (String) -> ByteArray?,
     isVisible: Boolean,
     onToggle: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
@@ -188,7 +185,7 @@ private fun PoseOfTheDayElement(
             pose?.let {
                 PoseListItem(
                     pose = it,
-                    imageStorage = imageStorage,
+                    loadImage = loadImage,
                     onOpenPoseDetails = onOpenPoseDetails,
                     onFavouriteClick = onFavouriteClick,
                 )
@@ -200,7 +197,7 @@ private fun PoseOfTheDayElement(
 @Composable
 private fun PoseListItem(
     pose: PoseData,
-    imageStorage: ImageStorage,
+    loadImage: suspend (String) -> ByteArray?,
     onOpenPoseDetails: (Int) -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -210,7 +207,7 @@ private fun PoseListItem(
         title = pose.name,
         description = pose.description,
         onClick = { onOpenPoseDetails(pose.id) },
-        image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
+        image = resolvePainter(imageUrl = pose.imageUrl, loadImage = loadImage),
         category = pose.category,
         difficulty = pose.difficulty,
         personalScore = pose.personalScore,

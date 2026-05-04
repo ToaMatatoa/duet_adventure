@@ -7,6 +7,7 @@ import com.sexadventure.STOP_TIMEOUT_MILLIS
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetFavouritePosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
+import com.sexadventure.domain.usecase.imagestorage.GetImageUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class FavouritePosesViewModel(
     getFavouritePosesUseCase: GetFavouritePosesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
+    private val getImageUseCase: GetImageUseCase,
 ) : ViewModel() {
     val state: StateFlow<FavouritePosesState> =
         getFavouritePosesUseCase()
@@ -29,6 +31,8 @@ class FavouritePosesViewModel(
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = STOP_TIMEOUT_MILLIS),
                 initialValue = FavouritePosesState(isLoading = true),
             )
+
+    suspend fun loadImage(imageName: String): ByteArray? = getImageUseCase(imageName)
 
     fun toggleFavourite(
         id: Int,
