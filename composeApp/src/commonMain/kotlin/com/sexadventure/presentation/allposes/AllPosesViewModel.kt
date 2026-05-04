@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.sexadventure.STOP_TIMEOUT_MILLIS
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
+import com.sexadventure.domain.provider.PredefinedPosesProvider
 import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
 import com.sexadventure.domain.usecase.SearchPosesByNameUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AllPosesViewModel(
+    private val posesProvider: PredefinedPosesProvider,
     private val seedPosesUseCase: SeedPosesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val searchPosesByNameUseCase: SearchPosesByNameUseCase,
@@ -63,7 +65,8 @@ class AllPosesViewModel(
 
     init {
         viewModelScope.launch {
-            seedPosesUseCase()
+            val poses = posesProvider.getPoses()
+            seedPosesUseCase.invoke(poses = poses)
         }
     }
 
