@@ -1,7 +1,6 @@
 package com.sexadventure.domain.usecase
 
 import com.sexadventure.core.repository.SinglePoseRepository
-import kotlin.math.sin
 
 class DeletePoseUseCase(
     private val singlePoseRepository: SinglePoseRepository,

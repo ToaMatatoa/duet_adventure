@@ -24,18 +24,16 @@ import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.mapper.resolvePainter
-import com.sexadventure.storage.ImageStorage
-import org.koin.compose.koinInject
 
 @Composable
 fun FavouritePosesScreen(
     state: FavouritePosesState,
+    loadImage: suspend (String) -> ByteArray? = { null },
     onPoseClick: (Int) -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
-    val imageStorage = koinInject<ImageStorage>()
 
     LifecycleResumeEffect(Unit) {
         listState.requestScrollToItem(0)
@@ -92,7 +90,7 @@ fun FavouritePosesScreen(
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
                             isUserCreated = pose.isUserCreated,
-                            image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
+                            image = resolvePainter(imageUrl = pose.imageUrl, loadImage = loadImage),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,

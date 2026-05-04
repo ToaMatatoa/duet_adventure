@@ -40,18 +40,17 @@ import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.mapper.resolvePainter
-import com.sexadventure.storage.ImageStorage
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Flame
 import compose.icons.tablericons.Heart
 import compose.icons.tablericons.Photo
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.Trash
-import org.koin.compose.koinInject
 
 @Composable
 fun DetailPoseScreen(
     state: DetailPoseState,
+    loadImage: suspend (String) -> ByteArray? = { null },
     onBackClick: () -> Unit,
     onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
@@ -101,6 +100,7 @@ fun DetailPoseScreen(
             else -> {
                 PoseDetailContent(
                     pose = state.pose,
+                    loadImage = loadImage,
                     onDeletePose = onDeletePose,
                     onToggleFavourite = onToggleFavourite,
                     onScoreChange = onScoreChange,
@@ -114,6 +114,7 @@ fun DetailPoseScreen(
 @Composable
 private fun PoseDetailContent(
     pose: PoseData,
+    loadImage: suspend (String) -> ByteArray?,
     onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
@@ -126,8 +127,7 @@ private fun PoseDetailContent(
             .verticalScroll(state = rememberScrollState())
             .padding(horizontal = 16.dp),
     ) {
-        val imageStorage = koinInject<ImageStorage>()
-        val painter = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage)
+        val painter = resolvePainter(imageUrl = pose.imageUrl, loadImage = loadImage)
         val imageModifier = Modifier
             .fillMaxWidth()
             .height(280.dp)

@@ -15,6 +15,7 @@ fun FavouritePosesRoot(
 
     FavouritePosesScreen(
         state = state,
+        loadImage = viewModel::loadImage,
         onPoseClick = onPoseClick,
         onFavouriteClick = viewModel::toggleFavourite,
         modifier = modifier,

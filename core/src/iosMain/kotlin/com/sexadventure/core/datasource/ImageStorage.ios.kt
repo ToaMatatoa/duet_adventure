@@ -1,4 +1,4 @@
-package com.sexadventure.storage
+package com.sexadventure.core.datasource
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
@@ -6,8 +6,8 @@ import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSData
+import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
@@ -32,7 +32,10 @@ actual class ImageStorage {
         return dir
     }
 
-    actual suspend fun saveImage(bytes: ByteArray, fileName: String): String =
+    actual suspend fun saveImage(
+        bytes: ByteArray,
+        fileName: String,
+    ): String =
         withContext(Dispatchers.IO) {
             val path = "${userImagesDir()}/$fileName"
             val nsData = bytes.usePinned { pinned ->

@@ -8,8 +8,8 @@ import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.model.displayName
 import com.sexadventure.domain.usecase.SavePoseUseCase
-import com.sexadventure.storage.ImageStorage
-import com.sexadventure.storage.LOCAL_IMAGE_PREFIX
+import com.sexadventure.domain.usecase.imagestorage.SaveImageUseCase
+import com.sexadventure.logic.LOCAL_IMAGE_PREFIX
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +20,8 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class AddPoseViewModel(
-    private val imageStorage: ImageStorage,
     private val savePoseUseCase: SavePoseUseCase,
+    private val saveImageUseCase: SaveImageUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<AddPoseState> = MutableStateFlow(value = AddPoseState())
     val state: StateFlow<AddPoseState> = _state.asStateFlow()
@@ -99,7 +99,7 @@ class AddPoseViewModel(
         viewModelScope.launch {
             val imageUrl = pendingImageBytes?.let { bytes ->
                 val fileName = "user_img_${Uuid.random()}.jpg"
-                imageStorage.saveImage(bytes, fileName)
+                saveImageUseCase.invoke(imageData = bytes, imageName = fileName)
                 "$LOCAL_IMAGE_PREFIX$fileName"
             } ?: ""
 

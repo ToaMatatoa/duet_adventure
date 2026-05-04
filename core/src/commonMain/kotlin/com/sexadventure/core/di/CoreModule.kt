@@ -7,6 +7,8 @@ import com.sexadventure.core.datasource.MutablePoseDataSource
 import com.sexadventure.core.datasource.MutablePoseDataSourceImpl
 import com.sexadventure.core.datasource.PersistentPoseDataSource
 import com.sexadventure.core.datasource.PersistentPoseDataSourceImpl
+import com.sexadventure.core.repository.ImageStorageRepository
+import com.sexadventure.core.repository.ImageStorageRepositoryImpl
 import com.sexadventure.core.repository.MultiplePoseRepository
 import com.sexadventure.core.repository.MultiplePoseRepositoryImpl
 import com.sexadventure.core.repository.PoseAmountRepository
@@ -40,6 +42,11 @@ val provideDataSourceModule =
 
 val provideRepositoryModule =
     module {
+        single<ImageStorageRepository> {
+            ImageStorageRepositoryImpl(
+                imageStorage = get(),
+            )
+        }
         single<MultiplePoseRepository> {
             MultiplePoseRepositoryImpl(
                 persistentPoseDataSource = get(),

@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,6 +33,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.sexadventure.designsystem.listitem.ListItem
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.topbar.TopBar
@@ -41,12 +41,12 @@ import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.model.displayName
 import com.sexadventure.mapper.resolvePainter
-import com.sexadventure.storage.ImageStorage
 
 @Composable
 fun AllPosesScreen(
     state: AllPosesState,
     searchQuery: String,
+    loadImage: suspend (String) -> ByteArray? = { null },
     onPoseClick: (Int) -> Unit,
     onOpenAddPoseScreen:() -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
@@ -60,7 +60,6 @@ fun AllPosesScreen(
     val listState = rememberLazyListState()
     var showCategoryFilterMenu by remember { mutableStateOf(value = false) }
     var showSearchFilterMenu by remember { mutableStateOf(value = false) }
-    val imageStorage = org.koin.compose.koinInject<ImageStorage>()
 
     LifecycleResumeEffect(Unit) {
         listState.requestScrollToItem(0)
@@ -168,7 +167,7 @@ fun AllPosesScreen(
                     items(items = state.poses, key = { it.id }) { pose ->
                         ListItem(
                             isUserCreated = pose.isUserCreated,
-                            image = resolvePainter(imageUrl = pose.imageUrl, imageStorage = imageStorage),
+                            image = resolvePainter(imageUrl = pose.imageUrl, loadImage = loadImage),
                             title = pose.name,
                             description = pose.description,
                             difficulty = pose.difficulty,
@@ -260,10 +259,10 @@ private fun AllPosesScreenPreview() {
                             difficulty = 8,
                             personalScore = 9,
                             isFavorite = true,
-                ),
+                        ),
+                    ),
             ),
-                ),
-            searchQuery = "",
+        searchQuery = "",
         onPoseClick = {},
         onOpenAddPoseScreen = {},
         onFavouriteClick = { _, _ -> },

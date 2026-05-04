@@ -4,12 +4,14 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sexadventure.STOP_TIMEOUT_MILLIS
+import com.sexadventure.domain.provider.PredefinedPosesProvider
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
 import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
 import com.sexadventure.domain.usecase.SearchPosesByNameUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
+import com.sexadventure.domain.usecase.imagestorage.GetImageUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,10 +23,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AllPosesViewModel(
+    private val posesProvider: PredefinedPosesProvider,
     private val seedPosesUseCase: SeedPosesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val searchPosesByNameUseCase: SearchPosesByNameUseCase,
     private val getPosesByCategoryUseCase: GetPosesByCategoryUseCase,
+    private val getImageUseCase: GetImageUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(value = AllPosesState())
     val searchQuery: StateFlow<String> =
@@ -63,9 +67,12 @@ class AllPosesViewModel(
 
     init {
         viewModelScope.launch {
-            seedPosesUseCase()
+            val poses = posesProvider.getPoses()
+            seedPosesUseCase.invoke(poses = poses)
         }
     }
+
+    suspend fun loadImage(imageName: String): ByteArray? = getImageUseCase(imageName)
 
     fun selectCategory(category: PoseCategory) {
         _state.update { it.copy(searchQuery = "", selectedCategory = category) }

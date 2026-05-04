@@ -21,6 +21,7 @@ fun ProfileRoot(
 
     ProfileScreen(
         state = state,
+        loadImage = viewModel::loadImage,
         onGetRandomPose = viewModel::getRandomPose,
         onTogglePoseOfTheDay = viewModel::togglePoseOfTheDay,
         onFavouriteClick = viewModel::toggleFavourite,

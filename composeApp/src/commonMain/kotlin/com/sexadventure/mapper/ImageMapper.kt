@@ -9,9 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
-import com.sexadventure.storage.ImageStorage
-import com.sexadventure.storage.isLocalImage
-import com.sexadventure.storage.localImageFileName
+import com.sexadventure.logic.isLocalImage
+import com.sexadventure.logic.localImageFileName
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import sexadventure.composeapp.generated.resources.Res
@@ -185,28 +184,28 @@ fun resolveImage(imageName: String?): DrawableResource? {
 /**
  * Composable that resolves an imageUrl to a [Painter].
  * - Predefined poses: maps drawable key → painterResource
- * - User images ("local://…"): loads bytes from [ImageStorage] → ImageBitmap → BitmapPainter
+ * - User images ("local://…"): calls [loadImage] to get bytes → ImageBitmap → BitmapPainter
  * - Returns `null` if no image is available.
  */
 @Composable
 fun resolvePainter(
     imageUrl: String?,
-    imageStorage: ImageStorage,
+    loadImage: suspend (String) -> ByteArray?,
 ): Painter? {
     if (imageUrl.isNullOrBlank()) return null
 
     if (isLocalImage(imageUrl)) {
         var bitmap by remember(imageUrl) { mutableStateOf<ImageBitmap?>(null) }
         LaunchedEffect(imageUrl) {
-            val bytes = imageStorage.loadImageBytes(localImageFileName(imageUrl))
-            if (bytes != null) {
-                bitmap = bytesToImageBitmap(bytes)
-            }
+            runCatching { loadImage(localImageFileName(imageUrl)) }
+                .onSuccess { bytes ->
+                    if (bytes != null) bitmap = bytesToImageBitmap(bytes)
+                }
         }
-        return bitmap?.let { BitmapPainter(it) }
+        return bitmap?.let { BitmapPainter(image = it) }
     }
 
-    val drawableResource = resolveImage(imageUrl) ?: return null
+    val drawableResource = resolveImage(imageName = imageUrl) ?: return null
     return painterResource(drawableResource)
 }
 
@@ -214,4 +213,3 @@ fun resolvePainter(
  * Converts raw image bytes to an [ImageBitmap].
  */
 expect fun bytesToImageBitmap(bytes: ByteArray): ImageBitmap?
-

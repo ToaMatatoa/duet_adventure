@@ -1,18 +1,23 @@
-package com.sexadventure.storage
+package com.sexadventure.core.datasource
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-actual class ImageStorage(private val context: Context) {
+actual class ImageStorage(
+    private val context: Context,
+) {
     private fun userImagesDir(): File {
         val dir = File(context.filesDir, "user_images")
         if (!dir.exists()) dir.mkdirs()
         return dir
     }
 
-    actual suspend fun saveImage(bytes: ByteArray, fileName: String): String =
+    actual suspend fun saveImage(
+        bytes: ByteArray,
+        fileName: String,
+    ): String =
         withContext(Dispatchers.IO) {
             val file = File(userImagesDir(), fileName)
             file.writeBytes(bytes)

@@ -9,6 +9,10 @@ import com.sexadventure.domain.usecase.GetPoseByIdUseCase
 import com.sexadventure.domain.usecase.ToggleFavouriteUseCase
 import com.sexadventure.domain.usecase.UpdateDifficultyUseCase
 import com.sexadventure.domain.usecase.UpdatePersonalScoreUseCase
+import com.sexadventure.domain.usecase.imagestorage.DeleteImageUseCase
+import com.sexadventure.domain.usecase.imagestorage.GetImageUseCase
+import com.sexadventure.logic.isLocalImage
+import com.sexadventure.logic.localImageFileName
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +28,8 @@ class DetailPoseViewModel(
     private val updatePersonalScoreUseCase: UpdatePersonalScoreUseCase,
     private val updateDifficultyUseCase: UpdateDifficultyUseCase,
     private val deletePoseUseCase: DeletePoseUseCase,
+    private val getImageUseCase: GetImageUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(value = DetailPoseState())
     val state: StateFlow<DetailPoseState> = _state.asStateFlow()
@@ -34,6 +40,8 @@ class DetailPoseViewModel(
     init {
         loadPose()
     }
+
+    suspend fun loadImage(imageName: String): ByteArray? = getImageUseCase(imageName)
 
     private fun loadPose() {
         viewModelScope.launch {
@@ -46,9 +54,13 @@ class DetailPoseViewModel(
     fun deletePose() {
         val pose = _state.value.pose ?: return
         viewModelScope.launch {
+            // Clean up the local image file before deleting the DB record
+            if (pose.isUserCreated && isLocalImage(pose.imageUrl)) {
+                deleteImageUseCase(imageName = localImageFileName(pose.imageUrl))
+            }
             deletePoseUseCase.invoke(pose.id)
-            _effects.send(DetailPoseEffects.ShowMessage)
-            _effects.send(DetailPoseEffects.BackToHome)
+            _effects.send(element = DetailPoseEffects.ShowMessage)
+            _effects.send(element = DetailPoseEffects.BackToHome)
         }
     }
 
