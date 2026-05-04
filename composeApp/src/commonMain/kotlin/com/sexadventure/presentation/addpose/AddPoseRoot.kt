@@ -7,10 +7,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigationevent.compose.NavigationBackHandler
-import com.catrak.snackbar.SnackbarController
-import com.catrak.snackbar.SnackbarEvent
 import com.sexadventure.designsystem.strings.Strings
+import com.sexadventure.snackbar.SnackbarController
+import com.sexadventure.snackbar.SnackbarEvent
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -27,14 +26,17 @@ fun AddPoseRoot(
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is AddPoseEffects.BackToHome -> backClick()
+                is AddPoseEffects.BackToHome -> {
+                    backClick()
+                }
 
                 is AddPoseEffects.ShowMessage -> {
                     scope.launch {
                         SnackbarController.sendEvent(
-                            event = SnackbarEvent(
-                                message = Strings.AddEditPose.POSE_SAVED,
-                            ),
+                            event =
+                                SnackbarEvent(
+                                    message = Strings.AddEditPose.POSE_SAVED,
+                                ),
                         )
                     }
                 }

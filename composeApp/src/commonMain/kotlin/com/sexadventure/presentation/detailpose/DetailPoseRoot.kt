@@ -7,9 +7,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.catrak.snackbar.SnackbarController
-import com.catrak.snackbar.SnackbarEvent
 import com.sexadventure.designsystem.strings.Strings
+import com.sexadventure.snackbar.SnackbarController
+import com.sexadventure.snackbar.SnackbarEvent
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -30,7 +30,9 @@ fun DetailPoseRoot(
     LaunchedEffect(Unit) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                is DetailPoseEffects.BackToHome -> backClick()
+                is DetailPoseEffects.BackToHome -> {
+                    backClick()
+                }
 
                 is DetailPoseEffects.ShowMessage -> {
                     scope.launch {

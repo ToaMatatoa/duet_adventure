@@ -1,9 +1,11 @@
-package com.catrak.snackbar
+package com.sexadventure.snackbar
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
-data class SnackbarEvent(val message: String)
+data class SnackbarEvent(
+    val message: String,
+)
 
 object SnackbarController {
     private val _events = Channel<SnackbarEvent>()

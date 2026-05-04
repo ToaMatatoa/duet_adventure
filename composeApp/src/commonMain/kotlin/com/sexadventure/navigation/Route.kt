@@ -16,7 +16,7 @@ sealed interface Route : NavKey {
 
     @Serializable
     data class PoseDetails(
-        val id: Int
+        val id: Int,
     ) : Route
 
     @Serializable
