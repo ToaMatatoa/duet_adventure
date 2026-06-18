@@ -17,23 +17,36 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.sexadventure.designsystem.strings.Strings
 import com.sexadventure.designsystem.theme.FlameColor
 import com.sexadventure.designsystem.theme.GoldenColor
@@ -58,6 +71,8 @@ fun DetailPoseScreen(
     onDifficultyChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var shouldShowDeletePoseDialog by remember { mutableStateOf(value = false) }
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -101,12 +116,19 @@ fun DetailPoseScreen(
                 PoseDetailContent(
                     pose = state.pose,
                     loadImage = loadImage,
-                    onDeletePose = onDeletePose,
+                    onDeletePose = { shouldShowDeletePoseDialog = true },
                     onToggleFavourite = onToggleFavourite,
                     onScoreChange = onScoreChange,
                     onDifficultyChange = onDifficultyChange,
                 )
             }
+        }
+
+        if (shouldShowDeletePoseDialog) {
+            DeletePoseAlertDialog(
+                onCancelDialog = { shouldShowDeletePoseDialog = false },
+                onConfirm = onDeletePose,
+            )
         }
     }
 }
@@ -337,6 +359,85 @@ private fun PoseDetailContent(
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeletePoseAlertDialog(
+    onConfirm: () -> Unit,
+    onCancelDialog: () -> Unit,
+) {
+    BasicAlertDialog(
+        onDismissRequest = onCancelDialog,
+        properties = DialogProperties(dismissOnBackPress = true),
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Column {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(space = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = Strings.PoseDetail.DELETE_POSE,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
+
+                    Text(
+                        text = Strings.PoseDetail.DO_YOU_WANT_TO_DELETE_POSE,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+                ) {
+                    TextButton(
+                        onClick = {
+                            onConfirm()
+                            onCancelDialog()
+                        },
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier
+                                .fillMaxWidth()
+                                .height(height = 40.dp)
+                                .weight(weight = 1f),
+                    ) {
+                        Text(
+                            text = Strings.Common.OK,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+
+                    TextButton(
+                        onClick = onCancelDialog,
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier
+                                .fillMaxWidth()
+                                .height(height = 40.dp)
+                                .weight(weight = 1f),
+                    ) {
+                        Text(
+                            text = Strings.Common.CANCEL,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
         }
     }
 }

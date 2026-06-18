@@ -44,6 +44,10 @@ object Strings {
         const val POSE_NOT_FOUND = "Pose not found"
         const val USER_COMMENTS_LABEL = "User comments"
         const val POSE_DELETED = "Pose deleted successfully"
+
+        const val DELETE_POSE = "Delete pose"
+
+        const val DO_YOU_WANT_TO_DELETE_POSE = "Do you want to delete this pose?"
     }
 
     /* ──────────────────────────────────────────────
