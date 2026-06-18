@@ -18,6 +18,7 @@ import org.koin.core.parameter.parametersOf
 fun DetailPoseRoot(
     poseId: Int,
     onBackClick: () -> Unit,
+    onOpenAddPoseScreen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel = koinViewModel<DetailPoseViewModel>(
@@ -32,6 +33,10 @@ fun DetailPoseRoot(
             when (effect) {
                 is DetailPoseEffects.BackToHome -> {
                     backClick()
+                }
+
+                is DetailPoseEffects.OpenAddPoseScreen -> {
+                    onOpenAddPoseScreen()
                 }
 
                 is DetailPoseEffects.ShowMessage -> {
@@ -51,6 +56,7 @@ fun DetailPoseRoot(
         state = state,
         loadImage = viewModel::loadImage,
         onBackClick = onBackClick,
+        onOpenAddPoseScreen = viewModel::openAddPoseScreen,
         onDeletePose = viewModel::deletePose,
         onToggleFavourite = viewModel::toggleFavourite,
         onScoreChange = viewModel::updateScore,

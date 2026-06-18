@@ -9,7 +9,9 @@ sealed interface Route : NavKey {
     data object AllPoses : Route
 
     @Serializable
-    data object AddPose : Route
+    data class AddPose(
+        val id: Int = 0,
+    ) : Route
 
     @Serializable
     data object FavouritePoses : Route

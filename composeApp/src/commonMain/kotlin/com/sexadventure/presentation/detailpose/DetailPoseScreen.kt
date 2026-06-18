@@ -65,6 +65,7 @@ fun DetailPoseScreen(
     state: DetailPoseState,
     loadImage: suspend (String) -> ByteArray? = { null },
     onBackClick: () -> Unit,
+    onOpenAddPoseScreen:()-> Unit,
     onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
@@ -83,7 +84,9 @@ fun DetailPoseScreen(
         TopBar(
             title = Strings.PoseDetail.SCREEN_TITLE,
             showBackButton = true,
+            showEditPose = state.pose?.isUserCreated ?: false,
             onBackClick = onBackClick,
+            onEditPoseClick = onOpenAddPoseScreen,
         )
 
         when {
@@ -450,6 +453,7 @@ private fun DetailPoseScreenPreview() {
             pose = null,
         ),
         onBackClick = {},
+        onOpenAddPoseScreen = {},
         onDeletePose = {},
         onToggleFavourite = {},
         onScoreChange = {},
@@ -463,6 +467,7 @@ private fun DetailPoseScreenLoadingPreview() {
     DetailPoseScreen(
         state = DetailPoseState(isLoading = true),
         onBackClick = {},
+        onOpenAddPoseScreen = {},
         onDeletePose = {},
         onToggleFavourite = {},
         onScoreChange = {},

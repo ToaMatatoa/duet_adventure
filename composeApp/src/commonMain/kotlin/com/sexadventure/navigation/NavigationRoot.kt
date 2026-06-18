@@ -81,14 +81,16 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                                     navigator.navigate(route = Route.PoseDetails(id = poseId))
                                 },
                                 onOpenAddPoseScreen = {
-                                    navigator.navigate(route = Route.AddPose)
+                                    navigator.navigate(route = Route.AddPose())
                                 },
                             )
                         }
 
-                        entry<Route.AddPose> {
+                        entry<Route.AddPose> { route ->
                             AddPoseRoot(
+                                poseId = route.id,
                                 onBackClick = navigator::goBack,
+                                onNavigateToAllPoses = navigator::goBack,
                             )
                         }
 
@@ -104,6 +106,9 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                             DetailPoseRoot(
                                 poseId = route.id,
                                 onBackClick = navigator::goBack,
+                                onOpenAddPoseScreen = {
+                                    navigator.navigate(route = Route.AddPose(route.id))
+                                },
                             )
                         }
 
