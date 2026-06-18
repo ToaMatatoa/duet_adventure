@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -56,6 +56,7 @@ import com.sexadventure.designsystem.theme.FlameColor
 import com.sexadventure.designsystem.theme.GoldenColor
 import com.sexadventure.designsystem.topbar.TopBar
 import com.sexadventure.domain.model.PoseCategory
+import com.sexadventure.mapper.resolvePainter
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.X
@@ -68,6 +69,7 @@ import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLa
 @Composable
 fun AddPoseScreen(
     state: AddPoseState,
+    loadImage: suspend (String) -> ByteArray?,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onCategoryClick: (String) -> Unit,
@@ -103,155 +105,209 @@ fun AddPoseScreen(
                 keyboardController?.hide()
             },
     ) {
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
-
         TopBar(
-            title = Strings.AddEditPose.SCREEN_TITLE_ADD,
+            title = if (state.isEditMode) Strings.AddEditPose.SCREEN_TITLE_EDIT else Strings.AddEditPose.SCREEN_TITLE_ADD,
             showBackButton = true,
             onBackClick = onBackClick,
         )
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .verticalScroll(state = rememberScrollState()),
-        ) {
-            PosePhoto(
-                selectedImage = selectedImage,
-                showGallery = showGallery,
-                onSelectImage = { photos ->
-                    val photo = photos.firstOrNull()
-                    selectedImage = photo
-                    if (photo != null) {
-                        onImageSelected(photo.loadBytes())
-                    } else {
-                        onImageRemoved()
-                    }
-                },
-                onShowGalleryChange = { showGallery = it },
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ProjectOutlinedTextField(
-                value = state.name,
-                onValueChange = onNameChange,
-                label = Strings.AddEditPose.POSE_NAME_LABEL,
-                valueMaxLength = POSE_NAME_MAX_LENGTH,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = Next,
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    },
-                ),
+        if (state.isLoading) {
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ProjectOutlinedTextField(
-                value = state.description,
-                onValueChange = onDescriptionChange,
-                label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
-                valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
-                maxLines = 4,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = Next,
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        commentsFocusRequester.requestFocus()
-                    },
-                ),
-                modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth(),
-            )
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(56.dp),
+                )
+            }
+        } else {
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(state = rememberScrollState()),
+            ) {
+                PosePhoto(
+                    selectedImage = selectedImage,
+                    existingImageUrl = state.imageUrl,
+                    loadImage = loadImage,
+                    showGallery = showGallery,
+                    onSelectImage = { photos ->
+                        val photo = photos.firstOrNull()
+                        selectedImage = photo
+                        if (photo != null) {
+                            onImageSelected(photo.loadBytes())
+                        } else {
+                            onImageRemoved()
+                        }
+                    },
+                    onShowGalleryChange = { showGallery = it },
+                )
 
-            PoseCategory(
-                isCategoryChosen = { category -> state.categories.contains(category) },
-                onCategoryClick = onCategoryClick,
-                modifier = Modifier.fillMaxWidth(),
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                ProjectOutlinedTextField(
+                    value = state.name,
+                    onValueChange = onNameChange,
+                    label = Strings.AddEditPose.POSE_NAME_LABEL,
+                    valueMaxLength = POSE_NAME_MAX_LENGTH,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                )
 
-            PoseDifficultyContent(
-                difficulty = state.difficulty,
-                onDifficultyChange = onDifficultyChange,
-            )
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                ProjectOutlinedTextField(
+                    value = state.description,
+                    onValueChange = onDescriptionChange,
+                    label = Strings.AddEditPose.POSE_DESCRIPTION_LABEL,
+                    valueMaxLength = POSE_DESCRIPTION_MAX_LENGTH,
+                    maxLines = 4,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            commentsFocusRequester.requestFocus()
+                        },
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                )
 
-            UserPersonalScoreContent(
-                personalScore = state.personalScore,
-                onPersonalScoreChange = onPersonalScoreChange,
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                PoseCategory(
+                    isCategoryChosen = { category -> state.categories.contains(category) },
+                    onCategoryClick = onCategoryClick,
+                    modifier = Modifier.fillMaxWidth(),
+                )
 
-            UserCommentsContent(
-                userComments = state.userComment,
-                onUserCommentsChange = onUserCommentsChange,
-                onDoneButtonClick = {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PoseDifficultyContent(
+                    difficulty = state.difficulty,
+                    onDifficultyChange = onDifficultyChange,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                UserPersonalScoreContent(
+                    personalScore = state.personalScore,
+                    onPersonalScoreChange = onPersonalScoreChange,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                UserCommentsContent(
+                    userComments = state.userComment,
+                    onUserCommentsChange = onUserCommentsChange,
+                    onDoneButtonClick = {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    },
+                    modifier = Modifier.focusRequester(commentsFocusRequester),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = Strings.AddEditPose.REQUIRED_FIELDS_HINT,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            TextButton(
+                onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
+                    onSavePoseClick()
                 },
-                modifier = Modifier.focusRequester(commentsFocusRequester),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = Strings.AddEditPose.REQUIRED_FIELDS_HINT,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        TextButton(
-            onClick = {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-                onSavePoseClick()
-            },
-            enabled = state.isValid,
-            modifier = Modifier
-                .height(height = 56.dp)
-                .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 16.dp)
-                .background(
+                enabled = state.isValid,
+                modifier = Modifier
+                    .height(height = 56.dp)
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp)
+                    .background(
+                        color = if (state.isValid) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        },
+                        shape = MaterialTheme.shapes.medium,
+                    ),
+            ) {
+                Text(
+                    text = if (state.isEditMode) Strings.Common.UPDATE else Strings.Common.SAVE,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                     color = if (state.isValid) {
-                        MaterialTheme.colorScheme.primary
+                        MaterialTheme.colorScheme.onPrimary
                     } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                     },
-                    shape = MaterialTheme.shapes.medium,
-                ),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ImageBox(
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height = 280.dp)
+            .background(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                shape = MaterialTheme.shapes.medium,
+            ),
+    ) {
+        content()
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(size = 64.dp)
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp, end = 8.dp)
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
+                .clickable { onRemove() },
         ) {
-            Text(
-                text = Strings.Common.SAVE,
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                color = if (state.isValid) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                },
+            Icon(
+                imageVector = TablerIcons.X,
+                contentDescription = Strings.AddEditPose.REMOVE_POSE_IMAGE,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(size = 32.dp),
             )
         }
     }
@@ -260,47 +316,55 @@ fun AddPoseScreen(
 @Composable
 private fun PosePhoto(
     selectedImage: PhotoResult?,
+    existingImageUrl: String,
+    loadImage: suspend (String) -> ByteArray?,
     showGallery: Boolean,
     onSelectImage: (List<GalleryPhotoResult>) -> Unit,
     onShowGalleryChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
-        if (selectedImage != null) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(height = 280.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        shape = MaterialTheme.shapes.medium,
-                    ),
-            ) {
-                Image(
-                    painter = selectedImage.loadPainter()!!,
-                    contentDescription = Strings.AddEditPose.POSE_IMAGE,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                )
+    val existingPainter = resolvePainter(imageUrl = existingImageUrl.ifBlank { null }, loadImage = loadImage)
 
+    Column(modifier = modifier) {
+        when {
+            selectedImage != null -> {
+                ImageBox(
+                    onRemove = { onSelectImage(emptyList()) },
+                ) {
+                    Image(
+                        painter = selectedImage.loadPainter()!!,
+                        contentDescription = Strings.AddEditPose.POSE_IMAGE,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+
+            existingPainter != null -> {
+                ImageBox(
+                    onRemove = { onSelectImage(emptyList()) },
+                ) {
+                    Image(
+                        painter = existingPainter,
+                        contentDescription = Strings.AddEditPose.POSE_IMAGE,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+
+            existingImageUrl.isNotBlank() -> {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(size = 64.dp)
-                        .align(Alignment.TopEnd)
-                        .padding(top = 8.dp, end = 8.dp)
-                        .clip(shape = MaterialTheme.shapes.medium)
+                        .fillMaxWidth()
+                        .height(height = 280.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f),
-                        )
-                        .clickable { onSelectImage(emptyList()) },
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                            shape = MaterialTheme.shapes.medium,
+                        ),
                 ) {
-                    Icon(
-                        imageVector = TablerIcons.X,
-                        contentDescription = Strings.AddEditPose.REMOVE_POSE_IMAGE,
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(size = 32.dp),
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(56.dp),
                     )
                 }
             }
@@ -533,6 +597,7 @@ private fun UserCommentsContent(
 fun AddPoseScreenPreview() {
     AddPoseScreen(
         state = AddPoseState(),
+        loadImage = { null },
         onNameChange = {},
         onDescriptionChange = {},
         onCategoryClick = {},

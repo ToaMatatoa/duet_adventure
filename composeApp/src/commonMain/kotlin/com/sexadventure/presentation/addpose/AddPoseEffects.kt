@@ -1,7 +1,9 @@
 package com.sexadventure.presentation.addpose
 
 sealed class AddPoseEffects {
-    data object ShowMessage : AddPoseEffects()
+    data class ShowMessage(val message: String) : AddPoseEffects()
 
     data object BackToHome : AddPoseEffects()
+
+    data object NavigateToAllPoses : AddPoseEffects()
 }

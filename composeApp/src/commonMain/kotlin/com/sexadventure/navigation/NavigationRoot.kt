@@ -90,7 +90,7 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
                             AddPoseRoot(
                                 poseId = route.id,
                                 onBackClick = navigator::goBack,
-                                onNavigateToAllPoses = navigator::goBack,
+                                onNavigateToAllPoses = navigator::popToTopLevel,
                             )
                         }
 

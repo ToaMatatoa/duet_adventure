@@ -24,4 +24,11 @@ class Navigator(
             currentStack.removeLastOrNull()
         }
     }
+
+    fun popToTopLevel() {
+        val currentStack = state.backStacks[state.topLevelRoute] ?: return
+        while (currentStack.size > 1) {
+            currentStack.removeLastOrNull()
+        }
+    }
 }
