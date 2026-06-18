@@ -51,6 +51,12 @@ class DetailPoseViewModel(
         }
     }
 
+    fun openAddPoseScreen() {
+        viewModelScope.launch {
+            _effects.send(element = DetailPoseEffects.OpenAddPoseScreen)
+        }
+    }
+
     fun deletePose() {
         val pose = _state.value.pose ?: return
         viewModelScope.launch {

@@ -18,6 +18,7 @@ import com.sexadventure.designsystem.strings.Strings
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.ArrowsDownUp
+import compose.icons.tablericons.Edit
 import compose.icons.tablericons.ListSearch
 import compose.icons.tablericons.Plus
 
@@ -30,10 +31,12 @@ fun TopBar(
     showAddNewPoseButton: Boolean = false,
     showSearchFilter: Boolean = false,
     showCategoryFilter: Boolean = false,
+    showEditPose: Boolean = false,
     onAddNewPose: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onShowSearchFilterClick: () -> Unit = {},
     onShowCategoryFilterClick: () -> Unit = {},
+    onEditPoseClick: () -> Unit = {},
     categoryFilterContent: @Composable () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
@@ -71,29 +74,41 @@ fun TopBar(
                 IconButton(onClick = onShowSearchFilterClick) {
                     Icon(
                         imageVector = TablerIcons.ListSearch,
-                        contentDescription = Strings.Common.BACK,
+                        contentDescription = Strings.Common.SEARCH,
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(28.dp),
                     )
                 }
             }
+
             AnimatedVisibility(visible = showCategoryFilter) {
                 IconButton(onClick = onShowCategoryFilterClick) {
                     Icon(
                         imageVector = TablerIcons.ArrowsDownUp,
-                        contentDescription = Strings.Common.BACK,
+                        contentDescription = Strings.Common.FILTER,
                         tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(28.dp),
                     )
                 }
                 categoryFilterContent()
             }
+
+            AnimatedVisibility(visible = showEditPose) {
+                IconButton(onClick = onEditPoseClick) {
+                    Icon(
+                        imageVector = TablerIcons.Edit,
+                        contentDescription = Strings.Common.BACK,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            }
         },
         windowInsets = WindowInsets(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                scrolledContainerColor = MaterialTheme.colorScheme.background,
-            ),
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+        ),
         modifier = modifier,
     )
 }

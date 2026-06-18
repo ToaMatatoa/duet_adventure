@@ -74,6 +74,7 @@ object Strings {
         const val POSE_DESCRIPTION_LABEL = "Pose description"
         const val REQUIRED_FIELDS_HINT = "* Name, category, and difficulty are required"
         const val POSE_SAVED = "Pose saved successfully"
+        const val POSE_UPDATED = "Pose updated successfully"
     }
 
     /* ──────────────────────────────────────────────
@@ -84,9 +85,15 @@ object Strings {
 
         const val SAVE = "Save"
 
+        const val UPDATE = "Update"
+
         const val CANCEL = "Cancel"
 
         const val BACK = "Back"
+
+        const val SEARCH = "Search"
+
+        const val FILTER = "Filter"
 
         const val FAVOURITE_POSE = "Favourite pose"
 
