@@ -29,3 +29,6 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":designsystem")
+include(":domain")
+include(":core")
