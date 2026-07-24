@@ -60,11 +60,14 @@ import com.sexadventure.mapper.resolvePainter
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.X
+import io.github.ismoy.imagepickerkmp.domain.config.GalleryConfig
 import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
 import io.github.ismoy.imagepickerkmp.domain.extensions.loadPainter
 import io.github.ismoy.imagepickerkmp.domain.models.GalleryPhotoResult
 import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
-import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLauncher
+import io.github.ismoy.imagepickerkmp.features.imagepicker.config.ImagePickerKMPConfig
+import io.github.ismoy.imagepickerkmp.features.imagepicker.model.ImagePickerResult
+import io.github.ismoy.imagepickerkmp.features.imagepicker.ui.rememberImagePickerKMP
 
 @Composable
 fun AddPoseScreen(
@@ -324,6 +327,43 @@ private fun PosePhoto(
     modifier: Modifier = Modifier,
 ) {
     val existingPainter = resolvePainter(imageUrl = existingImageUrl.ifBlank { null }, loadImage = loadImage)
+    val picker = rememberImagePickerKMP(
+        config = ImagePickerKMPConfig(
+            galleryConfig = GalleryConfig(
+                allowMultiple = false,
+                mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG,
+            )
+        )
+    )
+    val result = picker.result
+
+    LaunchedEffect(showGallery) {
+        if (showGallery) {
+            picker.launchGallery()
+        }
+    }
+
+    LaunchedEffect(result) {
+        when (val currentResult = result) {
+            is ImagePickerResult.Success -> {
+                onSelectImage(currentResult.photos)
+                onShowGalleryChange(false)
+                picker.reset()
+            }
+
+            is ImagePickerResult.Error -> {
+                onShowGalleryChange(false)
+                picker.reset()
+            }
+
+            is ImagePickerResult.Dismissed -> {
+                onShowGalleryChange(false)
+                picker.reset()
+            }
+
+            else -> Unit
+        }
+    }
 
     Column(modifier = modifier) {
         when {
@@ -367,21 +407,6 @@ private fun PosePhoto(
                         modifier = Modifier.size(56.dp),
                     )
                 }
-            }
-        }
-
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (showGallery) {
-                GalleryPickerLauncher(
-                    onPhotosSelected = { photo ->
-                        onSelectImage(photo)
-                        onShowGalleryChange(false)
-                    },
-                    onError = { onShowGalleryChange(false) },
-                    onDismiss = { onShowGalleryChange(false) },
-                    allowMultiple = false,
-                    mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG,
-                )
             }
         }
 
