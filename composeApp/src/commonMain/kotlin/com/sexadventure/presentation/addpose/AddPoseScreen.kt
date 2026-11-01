@@ -60,14 +60,14 @@ import com.sexadventure.mapper.resolvePainter
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Star
 import compose.icons.tablericons.X
-import io.github.ismoy.imagepickerkmp.domain.config.GalleryConfig
-import io.github.ismoy.imagepickerkmp.domain.extensions.loadBytes
-import io.github.ismoy.imagepickerkmp.domain.extensions.loadPainter
-import io.github.ismoy.imagepickerkmp.domain.models.GalleryPhotoResult
-import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
-import io.github.ismoy.imagepickerkmp.features.imagepicker.config.ImagePickerKMPConfig
-import io.github.ismoy.imagepickerkmp.features.imagepicker.model.ImagePickerResult
-import io.github.ismoy.imagepickerkmp.features.imagepicker.ui.rememberImagePickerKMP
+import io.github.ismoy.imagepickerkmp.config.GalleryConfig
+import io.github.ismoy.imagepickerkmp.extensions.loadBytes
+import io.github.ismoy.imagepickerkmp.extensions.loadPainter
+import io.github.ismoy.imagepickerkmp.picker.GalleryPhotoResult
+import io.github.ismoy.imagepickerkmp.picker.ImagePickerKMPConfig
+import io.github.ismoy.imagepickerkmp.picker.ImagePickerResult
+import io.github.ismoy.imagepickerkmp.picker.PhotoResult
+import io.github.ismoy.imagepickerkmp.picker.rememberImagePickerKMP
 
 @Composable
 fun AddPoseScreen(
