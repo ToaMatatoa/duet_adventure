@@ -59,11 +59,11 @@ fun rememberNavigationState(
         }
 
     val backStacks = topLevelRoutes.associateWith { key ->
-            rememberNavBackStack(
-                configuration = serializersConfig,
-                key,
-            )
-        }
+        rememberNavBackStack(
+            configuration = serializersConfig,
+            key,
+        )
+    }
 
     return remember(startRoute, topLevelRoutes) {
         NavigationState(
@@ -87,7 +87,9 @@ val serializersConfig = SavedStateConfiguration {
 }
 
 @Composable
-fun NavigationState.toEntries(entryProvider: (NavKey) -> NavEntry<NavKey>): SnapshotStateList<NavEntry<NavKey>> {
+fun NavigationState.toEntries(
+    entryProvider: (NavKey) -> NavEntry<NavKey>,
+): SnapshotStateList<NavEntry<NavKey>> {
     val decoratedEntries =
         backStacks.mapValues { (_, stack) ->
             val decorators = listOf(

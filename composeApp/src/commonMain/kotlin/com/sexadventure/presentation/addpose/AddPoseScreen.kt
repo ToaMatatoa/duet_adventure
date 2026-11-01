@@ -6,8 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -109,7 +109,11 @@ fun AddPoseScreen(
             },
     ) {
         TopBar(
-            title = if (state.isEditMode) Strings.AddEditPose.SCREEN_TITLE_EDIT else Strings.AddEditPose.SCREEN_TITLE_ADD,
+            title = if (state.isEditMode) {
+                Strings.AddEditPose.SCREEN_TITLE_EDIT
+            } else {
+                Strings.AddEditPose.SCREEN_TITLE_ADD
+            },
             showBackButton = true,
             onBackClick = onBackClick,
         )
@@ -326,14 +330,15 @@ private fun PosePhoto(
     onShowGalleryChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val existingPainter = resolvePainter(imageUrl = existingImageUrl.ifBlank { null }, loadImage = loadImage)
+    val existingPainter =
+        resolvePainter(imageUrl = existingImageUrl.ifBlank { null }, loadImage = loadImage)
     val picker = rememberImagePickerKMP(
         config = ImagePickerKMPConfig(
             galleryConfig = GalleryConfig(
                 allowMultiple = false,
                 mimeTypeMismatchMessage = Strings.AddEditPose.ONLY_ALLOW_PNG,
-            )
-        )
+            ),
+        ),
     )
     val result = picker.result
 

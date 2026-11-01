@@ -104,4 +104,3 @@ interface PoseDao {
     @Query("DELETE FROM pose WHERE id = :id")
     suspend fun deletePose(id: Int)
 }
-

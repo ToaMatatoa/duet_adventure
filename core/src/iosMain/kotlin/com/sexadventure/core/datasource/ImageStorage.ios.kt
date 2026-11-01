@@ -27,7 +27,12 @@ actual class ImageStorage {
         val dir = "$documentsDir/user_images"
         val fileManager = NSFileManager.defaultManager
         if (!fileManager.fileExistsAtPath(dir)) {
-            fileManager.createDirectoryAtPath(dir, withIntermediateDirectories = true, attributes = null, error = null)
+            fileManager.createDirectoryAtPath(
+                dir,
+                withIntermediateDirectories = true,
+                attributes = null,
+                error = null,
+            )
         }
         return dir
     }

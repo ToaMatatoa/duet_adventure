@@ -12,4 +12,3 @@ class UpdateUserCommentsUseCase(
         singlePoseRepository.updateUserComments(id, userComments)
     }
 }
-

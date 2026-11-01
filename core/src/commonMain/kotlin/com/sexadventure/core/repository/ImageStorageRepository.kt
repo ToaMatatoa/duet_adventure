@@ -19,7 +19,11 @@ class ImageStorageRepositoryImpl(
         imageName: String,
     ): String = imageStorage.saveImage(bytes = imageData, fileName = imageName)
 
-    override suspend fun deleteImage(imageName: String) = imageStorage.deleteImage(fileName = imageName)
+    override suspend fun deleteImage(imageName: String) = imageStorage.deleteImage(
+        fileName = imageName,
+    )
 
-    override suspend fun getImage(imageName: String): ByteArray? = imageStorage.loadImageBytes(fileName = imageName)
+    override suspend fun getImage(imageName: String): ByteArray? = imageStorage.loadImageBytes(
+        fileName = imageName,
+    )
 }

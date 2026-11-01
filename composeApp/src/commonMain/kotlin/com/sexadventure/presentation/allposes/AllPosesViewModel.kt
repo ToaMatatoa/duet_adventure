@@ -4,9 +4,9 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sexadventure.STOP_TIMEOUT_MILLIS
-import com.sexadventure.domain.provider.PredefinedPosesProvider
 import com.sexadventure.domain.model.PoseCategory
 import com.sexadventure.domain.model.PoseData
+import com.sexadventure.domain.provider.PredefinedPosesProvider
 import com.sexadventure.domain.usecase.GetPosesByCategoryUseCase
 import com.sexadventure.domain.usecase.SearchPosesByNameUseCase
 import com.sexadventure.domain.usecase.SeedPosesUseCase
@@ -82,7 +82,11 @@ class AllPosesViewModel(
         _state.update {
             it.copy(
                 searchQuery = query,
-                selectedCategory = if (query.isNotBlank()) PoseCategory.ALL else it.selectedCategory,
+                selectedCategory = if (query.isNotBlank()) {
+                    PoseCategory.ALL
+                } else {
+                    it.selectedCategory
+                },
             )
         }
     }

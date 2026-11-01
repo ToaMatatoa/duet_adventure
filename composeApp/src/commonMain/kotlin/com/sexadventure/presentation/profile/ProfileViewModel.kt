@@ -94,7 +94,11 @@ class ProfileViewModel(
                 _state.update {
                     it.copy(
                         randomPose = if (it.randomPose?.id == id) refreshed else it.randomPose,
-                        poseOfTheDay = if (it.poseOfTheDay?.id == id) refreshed else it.poseOfTheDay,
+                        poseOfTheDay = if (it.poseOfTheDay?.id == id) {
+                            refreshed
+                        } else {
+                            it.poseOfTheDay
+                        },
                     )
                 }
             }

@@ -72,7 +72,11 @@ fun ListItem(
         ),
         border = BorderStroke(
             width = if (isUserCreated) 1.dp else 0.dp,
-            color = if (isUserCreated) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+            color = if (isUserCreated) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.surface
+            },
         ),
         shape = RoundedCornerShape(size = 12.dp),
         modifier = modifier.fillMaxWidth(),

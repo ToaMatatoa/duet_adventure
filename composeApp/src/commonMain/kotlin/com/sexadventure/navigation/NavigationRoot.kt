@@ -50,7 +50,9 @@ fun NavigationRoot(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            if (navigationState.topLevelRoute in TOP_LEVEL_DESTINATIONS && navigationState.isAtTopLevel) {
+            if (navigationState.topLevelRoute in TOP_LEVEL_DESTINATIONS &&
+                navigationState.isAtTopLevel
+            ) {
                 SexAdventureNavigationBar(
                     selectedKey = navigationState.topLevelRoute,
                     onSelectKey = {

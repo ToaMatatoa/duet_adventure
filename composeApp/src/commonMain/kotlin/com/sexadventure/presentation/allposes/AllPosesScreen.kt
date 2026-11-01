@@ -48,7 +48,7 @@ fun AllPosesScreen(
     searchQuery: String,
     loadImage: suspend (String) -> ByteArray? = { null },
     onPoseClick: (Int) -> Unit,
-    onOpenAddPoseScreen:() -> Unit,
+    onOpenAddPoseScreen: () -> Unit,
     onFavouriteClick: (id: Int, currentFavourite: Boolean) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onCategorySelect: (PoseCategory) -> Unit,
@@ -254,7 +254,8 @@ private fun AllPosesScreenPreview() {
                         PoseData(
                             id = 3,
                             name = "Pose 3. Simply long name",
-                            description = "Very long description for pose 3. Some sexy pose. Lorem ipsum dolor sit amet.",
+                            description = "Very long description for pose 3. Some sexy pose. " +
+                                "Lorem ipsum dolor sit amet.",
                             category = "Oral",
                             difficulty = 8,
                             personalScore = 9,

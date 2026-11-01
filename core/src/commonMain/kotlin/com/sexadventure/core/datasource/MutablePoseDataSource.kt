@@ -1,8 +1,8 @@
 package com.sexadventure.core.datasource
 
 import com.sexadventure.core.database.dao.PoseDao
-import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.core.database.dao.PoseOfTheDayDao
+import com.sexadventure.core.database.entity.PoseEntity
 import com.sexadventure.core.database.entity.PoseOfTheDayEntity
 
 interface MutablePoseDataSource {

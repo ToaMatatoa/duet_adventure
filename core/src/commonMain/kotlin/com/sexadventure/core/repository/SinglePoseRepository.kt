@@ -61,7 +61,9 @@ class SinglePoseRepositoryImpl(
     private val persistentPoseDataSource: PersistentPoseDataSource,
     private val mutablePoseDataSource: MutablePoseDataSource,
 ) : SinglePoseRepository {
-    override suspend fun getPoseById(id: Int): PoseEntity? = persistentPoseDataSource.getPoseById(id)
+    override suspend fun getPoseById(
+        id: Int,
+    ): PoseEntity? = persistentPoseDataSource.getPoseById(id)
 
     override suspend fun getRandomPose(): PoseEntity? = persistentPoseDataSource.getRandomPose()
 
