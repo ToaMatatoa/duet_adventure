@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongParameterList:ListItem.kt:@Composable fun ListItem</ID>
+    <ID>LongParameterList:ProjectOutlinedTextField.kt:@Composable fun ProjectOutlinedTextField</ID>
+    <ID>LongParameterList:TopBar.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable fun TopBar</ID>
+  </CurrentIssues>
+</SmellBaseline>

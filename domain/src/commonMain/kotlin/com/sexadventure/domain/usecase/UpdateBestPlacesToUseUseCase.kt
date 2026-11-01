@@ -12,4 +12,3 @@ class UpdateBestPlacesToUseUseCase(
         singlePoseRepository.updateBestPlacesToUse(id, bestPlacesToUse)
     }
 }
-

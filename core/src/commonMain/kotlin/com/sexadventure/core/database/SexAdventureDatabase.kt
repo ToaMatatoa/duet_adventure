@@ -38,4 +38,5 @@ fun getRoomDatabase(builder: RoomDatabase.Builder<SexAdventureDatabase>): SexAdv
 
 fun getPoseDao(sexAdventureDatabase: SexAdventureDatabase) = sexAdventureDatabase.getPoseDao()
 
-fun getPoseOfTheDayDao(sexAdventureDatabase: SexAdventureDatabase) = sexAdventureDatabase.getPoseOfTheDayDao()
+fun getPoseOfTheDayDao(sexAdventureDatabase: SexAdventureDatabase) =
+    sexAdventureDatabase.getPoseOfTheDayDao()

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DetailPoseScreen.kt:@Composable private fun PoseDetailContent</ID>
+    <ID>LongMethod:AddPoseScreen.kt:@Composable fun AddPoseScreen</ID>
+    <ID>LongMethod:AllPosesScreen.kt:@Composable fun AllPosesScreen</ID>
+    <ID>LongMethod:DetailPoseScreen.kt:@Composable private fun PoseDetailContent</ID>
+    <ID>MatchingDeclarationName:NavigatorState.kt:NavigationState</ID>
+    <ID>ReturnCount:ImageMapper.kt:@Composable fun resolvePainter: Painter?</ID>
+    <ID>SwallowedException:ImageMapper.ios.kt:e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ImageMapper.ios.kt:e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

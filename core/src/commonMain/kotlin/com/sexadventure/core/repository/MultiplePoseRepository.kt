@@ -32,15 +32,26 @@ class MultiplePoseRepositoryImpl(
     /** Persistent methods */
     override fun getAllPoses(): Flow<List<PoseEntity>> = persistentPoseDataSource.getAllPoses()
 
-    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> = persistentPoseDataSource.getPosesByCategory(category)
+    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> =
+        persistentPoseDataSource.getPosesByCategory(
+            category,
+        )
 
-    override suspend fun getPredefinedPoses(): List<PoseEntity> = persistentPoseDataSource.getPredefinedPoses()
+    override suspend fun getPredefinedPoses(): List<PoseEntity> =
+        persistentPoseDataSource.getPredefinedPoses()
 
-    override suspend fun getUserCreatedPoses(): List<PoseEntity> = persistentPoseDataSource.getUserCreatedPoses()
+    override suspend fun getUserCreatedPoses(): List<PoseEntity> =
+        persistentPoseDataSource.getUserCreatedPoses()
 
-    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> = persistentPoseDataSource.searchPosesByName(query = query)
+    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> =
+        persistentPoseDataSource.searchPosesByName(
+            query = query,
+        )
 
     /** Mutable methods */
 
-    override suspend fun insertAllIgnore(poses: List<PoseEntity>) = mutablePoseDataSource.insertAllIgnore(poses)
+    override suspend fun insertAllIgnore(poses: List<PoseEntity>) =
+        mutablePoseDataSource.insertAllIgnore(
+            poses,
+        )
 }

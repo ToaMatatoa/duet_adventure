@@ -13,6 +13,8 @@ import com.sexadventure.domain.usecase.SavePoseUseCase
 import com.sexadventure.domain.usecase.imagestorage.GetImageUseCase
 import com.sexadventure.domain.usecase.imagestorage.SaveImageUseCase
 import com.sexadventure.logic.LOCAL_IMAGE_PREFIX
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class AddPoseViewModel(
     private val poseId: Int,
@@ -58,7 +58,9 @@ class AddPoseViewModel(
                         name = pose.name,
                         description = pose.description,
                         imageUrl = pose.imageUrl,
-                        categories = parseCategoriesFromDisplayString(categoryDisplay = pose.category),
+                        categories = parseCategoriesFromDisplayString(
+                            categoryDisplay = pose.category,
+                        ),
                         difficulty = pose.difficulty,
                         personalScore = pose.personalScore,
                         userComment = pose.userComments,
@@ -76,7 +78,9 @@ class AddPoseViewModel(
         val categoryNames = displayNames.mapNotNull { displayName ->
             PoseCategory.entries.firstOrNull { it.displayName() == displayName }?.name
         }
-        val nonAllCategoryNames = PoseCategory.entries.filter { it != PoseCategory.ALL }.map { it.name }
+        val nonAllCategoryNames = PoseCategory.entries.filter {
+            it != PoseCategory.ALL
+        }.map { it.name }
         return if (nonAllCategoryNames.all { it in categoryNames }) {
             listOf(PoseCategory.ALL.name)
         } else {
@@ -174,7 +178,9 @@ class AddPoseViewModel(
             savePoseUseCase(poseData = pose)
 
             if (currentState.isEditMode) {
-                _effects.send(AddPoseEffects.ShowMessage(message = Strings.AddEditPose.POSE_UPDATED))
+                _effects.send(
+                    AddPoseEffects.ShowMessage(message = Strings.AddEditPose.POSE_UPDATED),
+                )
                 _effects.send(AddPoseEffects.NavigateToAllPoses)
             } else {
                 _effects.send(AddPoseEffects.ShowMessage(message = Strings.AddEditPose.POSE_SAVED))

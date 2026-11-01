@@ -101,6 +101,11 @@ android {
             isMinifyEnabled = false
         }
     }
+    testOptions {
+        // AGP 9.5's Compose Preview tasks refuse to be created without this, which
+        // breaks `allTests` at configuration time.
+        unitTests.isIncludeAndroidResources = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

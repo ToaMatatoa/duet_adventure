@@ -36,13 +36,17 @@ class PersistentPoseDataSourceImpl(
 ) : PersistentPoseDataSource {
     override fun getAllPoses(): Flow<List<PoseEntity>> = poseDao.getAllPoses()
 
-    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> = poseDao.getPosesByCategory(category)
+    override fun getPosesByCategory(category: String): Flow<List<PoseEntity>> =
+        poseDao.getPosesByCategory(
+            category,
+        )
 
     override suspend fun getPoseById(id: Int): PoseEntity? = poseDao.getPoseById(id)
 
     override suspend fun getRandomPose(): PoseEntity? = poseDao.getRandomPose()
 
-    override suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity? = poseOfTheDayDao.getNecessaryInfoAboutPoseOfTheDay()
+    override suspend fun getNecessaryInfoAboutPoseOfTheDay(): PoseOfTheDayEntity? =
+        poseOfTheDayDao.getNecessaryInfoAboutPoseOfTheDay()
 
     override suspend fun getPredefinedPoses(): List<PoseEntity> = poseDao.getPredefinedPoses()
 
@@ -54,5 +58,8 @@ class PersistentPoseDataSourceImpl(
 
     override suspend fun getUserPosesAmount(): Int = poseDao.getUserPosesAmount()
 
-    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> = poseDao.searchPosesByName(query = query)
+    override fun searchPosesByName(query: String): Flow<List<PoseEntity>> =
+        poseDao.searchPosesByName(
+            query = query,
+        )
 }

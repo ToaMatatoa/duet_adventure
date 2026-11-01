@@ -65,7 +65,7 @@ fun DetailPoseScreen(
     state: DetailPoseState,
     loadImage: suspend (String) -> ByteArray? = { null },
     onBackClick: () -> Unit,
-    onOpenAddPoseScreen:()-> Unit,
+    onOpenAddPoseScreen: () -> Unit,
     onDeletePose: () -> Unit,
     onToggleFavourite: () -> Unit,
     onScoreChange: (Int) -> Unit,
@@ -404,8 +404,8 @@ private fun DeletePoseAlertDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
                 ) {
                     TextButton(
                         onClick = {
@@ -414,9 +414,9 @@ private fun DeletePoseAlertDialog(
                         },
                         shape = MaterialTheme.shapes.medium,
                         modifier = Modifier
-                                .fillMaxWidth()
-                                .height(height = 40.dp)
-                                .weight(weight = 1f),
+                            .fillMaxWidth()
+                            .height(height = 40.dp)
+                            .weight(weight = 1f),
                     ) {
                         Text(
                             text = Strings.Common.OK,
@@ -429,9 +429,9 @@ private fun DeletePoseAlertDialog(
                         onClick = onCancelDialog,
                         shape = MaterialTheme.shapes.medium,
                         modifier = Modifier
-                                .fillMaxWidth()
-                                .height(height = 40.dp)
-                                .weight(weight = 1f),
+                            .fillMaxWidth()
+                            .height(height = 40.dp)
+                            .weight(weight = 1f),
                     ) {
                         Text(
                             text = Strings.Common.CANCEL,

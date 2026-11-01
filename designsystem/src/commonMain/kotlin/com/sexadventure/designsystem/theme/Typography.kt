@@ -12,7 +12,7 @@ import sexadventure.designsystem.generated.resources.inter_medium
 import sexadventure.designsystem.generated.resources.inter_regular
 import sexadventure.designsystem.generated.resources.inter_semibold
 
-/** Builds the Inter font family with three bundled weights. */
+// Builds the Inter font family with three bundled weights.
 @Composable
 fun InterFontFamily() =
     FontFamily(
@@ -31,35 +31,35 @@ fun InterFontFamily() =
 fun AppTypography(): Typography {
     val inter = InterFontFamily()
     return Typography(
-        /** Screen titles — e.g. top-bar title, onboarding headline */
+        // Screen titles — e.g. top-bar title, onboarding headline
         headlineLarge =
             TextStyle(
                 fontFamily = inter,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 28.sp,
             ),
-        /** Card titles — e.g. adventure card name, section header */
+        // Card titles — e.g. adventure card name, section header
         titleMedium =
             TextStyle(
                 fontFamily = inter,
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
             ),
-        /** Primary descriptions — e.g. card body text, instructions */
+        // Primary descriptions — e.g. card body text, instructions
         bodyLarge =
             TextStyle(
                 fontFamily = inter,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
             ),
-        /** Secondary info — e.g. timestamps, metadata, helper text */
+        // Secondary info — e.g. timestamps, metadata, helper text
         bodyMedium =
             TextStyle(
                 fontFamily = inter,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
             ),
-        /** Tab labels, chips, badges, captions */
+        // Tab labels, chips, badges, captions
         labelSmall =
             TextStyle(
                 fontFamily = inter,
