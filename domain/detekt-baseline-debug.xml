@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>NoNameShadowing:SeedPosesUseCase.kt:SeedPosesUseCase$poses</ID>
+    <ID>ReturnCount:GetPoseOfTheDayUseCase.kt:GetPoseOfTheDayUseCase$suspend operator fun invoke: PoseData?</ID>
+  </CurrentIssues>
+</SmellBaseline>

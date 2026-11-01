@@ -79,6 +79,19 @@ For iOS, open `iosApp/` in Xcode and run from there.
 ./gradlew :composeApp:iosSimulatorArm64Test
 ```
 
+## Static analysis and CI
+
+```bash
+./gradlew staticAnalysis --continue     # ktlint + detekt
+./gradlew ktlintFormat                  # auto-fix formatting
+```
+
+ktlint is configured in `.editorconfig`, detekt in `config/detekt/detekt.yml`. Existing detekt findings
+are recorded in each module's `detekt-baseline*.xml`, so only new ones fail the check.
+
+GitHub Actions runs static analysis, the Android debug build and the iOS simulator framework link on
+pushes and pull requests to `main` and `develop`.
+
 ## License
 
 Apache License 2.0 — see [LICENSE](./LICENSE).

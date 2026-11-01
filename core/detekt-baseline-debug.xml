@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>InjectDispatcher:ImageStorage.android.kt:ImageStorage$IO</ID>
+    <ID>InjectDispatcher:SexAdventureDatabase.kt:IO</ID>
+    <ID>TooManyFunctions:PoseDao.kt:PoseDao</ID>
+  </CurrentIssues>
+</SmellBaseline>

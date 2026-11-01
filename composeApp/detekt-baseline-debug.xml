@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>AbstractClassCanBeInterface:AddPoseEffects.kt:AddPoseEffects$AddPoseEffects</ID>
+    <ID>AbstractClassCanBeInterface:DetailPoseEffects.kt:DetailPoseEffects$DetailPoseEffects</ID>
+    <ID>CyclomaticComplexMethod:DetailPoseScreen.kt:@Composable private fun PoseDetailContent</ID>
+    <ID>LongMethod:AddPoseScreen.kt:@Composable fun AddPoseScreen</ID>
+    <ID>LongMethod:AllPosesScreen.kt:@Composable fun AllPosesScreen</ID>
+    <ID>LongMethod:DetailPoseScreen.kt:@Composable private fun PoseDetailContent</ID>
+    <ID>LongParameterList:AddPoseScreen.kt:@Composable fun AddPoseScreen</ID>
+    <ID>MatchingDeclarationName:NavigatorState.kt:NavigationState</ID>
+    <ID>ReturnCount:ImageMapper.kt:@Composable fun resolvePainter: Painter?</ID>
+    <ID>SpreadOperator:AppModule.kt:( dataModule, viewModelModule, *domainModules().toTypedArray(), )</ID>
+    <ID>UnsafeCallOnNullableType:AddPoseScreen.kt:selectedImage.loadPainter()!!</ID>
+    <ID>UnusedPrivateProperty:AllPosesViewModel.kt:AllPosesViewModel$private val getPosesByCategoryUseCase: GetPosesByCategoryUseCase</ID>
+    <ID>UnusedPrivateProperty:AllPosesViewModel.kt:AllPosesViewModel$private val searchPosesByNameUseCase: SearchPosesByNameUseCase</ID>
+    <ID>UseOrEmpty:NavigatorState.kt:decoratedEntries[it] ?: emptyList()</ID>
+  </CurrentIssues>
+</SmellBaseline>
